@@ -3,7 +3,8 @@ import { shuffle, shake, burst } from '../engine/util.js';
 import { content, P, NUMWORDS } from '../engine/content.js';
 import { sfx, speak } from '../engine/audio.js';
 import { picture } from '../art/pictures.js';
-import { STROKES } from '../content/strokes.js';
+import { STROKES, isLower } from '../content/strokes.js';
+import { markSeen, leastSeenFirst } from '../engine/storage.js';
 import { INK } from '../engine/util.js';
 
 const STEP = 2.5;        // Abstand der Prüfpunkte entlang des Strichs (Raster-Einheiten)
@@ -15,10 +16,11 @@ export const schreiben = {
 
   makeTasks({ kind, chars = '', minLen = 0, maxLen = 99, n }) {
     if (kind === 'trace') {
-      return shuffle([...chars]).slice(0, n || 6).map(ch => ({ kind, ch }));
+      // Zeichen, die noch selten geübt wurden, kommen zuerst dran.
+      return shuffle(leastSeenFirst([...chars], ch => 'z:' + ch).slice(0, n || 6)).map(ch => ({ kind, ch }));
     }
     const pool = content.words.filter(w => w.w.length >= minLen && w.w.length <= maxLen);
-    return shuffle(pool).slice(0, n || 6).map(w => ({ kind, w }));
+    return shuffle(leastSeenFirst(pool, w => 'w:' + w.w).slice(0, n || 6)).map(w => ({ kind, w }));
   },
 
   mount(root, t, api) {
@@ -30,9 +32,11 @@ export const schreiben = {
 
 function mountTrace(root, t, api) {
   const strokes = STROKES[t.ch];
+  const lower = isLower(t.ch);
+  const height = lower ? 180 : 140;   // Kleinbuchstaben: zusätzliche Unterlinie für g, j, p, q, y
   root.innerHTML = `<div class="trace panel">
-    <svg class="trace-svg" viewBox="0 0 100 140">
-      <g class="lines"><line x1="3" x2="97" y1="20" y2="20"/><line class="mid" x1="3" x2="97" y1="70" y2="70"/><line x1="3" x2="97" y1="120" y2="120"/></g>
+    <svg class="trace-svg${lower ? ' lower' : ''}" viewBox="0 0 100 ${height}" style="aspect-ratio:100/${height}">
+      <g class="lines"><line x1="3" x2="97" y1="20" y2="20"/><line class="mid" x1="3" x2="97" y1="70" y2="70"/><line x1="3" x2="97" y1="120" y2="120"/>${lower ? '<line class="low" x1="3" x2="97" y1="170" y2="170"/>' : ''}</g>
       <g class="ghost">${strokes.map(d => `<path d="${d}"/>`).join('')}</g>
       <g class="ink">${strokes.map(d => `<path d="${d}"/>`).join('')}</g>
       <path class="guide"/>
@@ -135,7 +139,8 @@ function mountTrace(root, t, api) {
     finished = true;
     svg.classList.add('complete');
     const clean = moveCount === 0 || offCount / moveCount < 0.3;
-    const spoken = /\d/.test(t.ch) ? NUMWORDS[Number(t.ch)] : t.ch;
+    const spoken = /\d/.test(t.ch) ? NUMWORDS[Number(t.ch)] : t.ch === 'ß' ? 'Eszett' : t.ch.toUpperCase();
+    markSeen('z:' + t.ch);
     await api.correct({ target: svg, say: spoken });
     api.done(clean);
   }
@@ -199,6 +204,7 @@ function mountTiles(root, t, api) {
         return;
       }
       locked = true;
+      markSeen('w:' + word);
       root.querySelector('.slots').classList.add('ok');
       await api.correct({ target: root.querySelector('.slots'), say: word });
       api.done(mistakes === 0);

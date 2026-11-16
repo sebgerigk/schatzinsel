@@ -3,6 +3,7 @@
 import { shuffle, wait } from '../engine/util.js';
 import { content, P } from '../engine/content.js';
 import { sfx } from '../engine/audio.js';
+import { markSeen, leastSeenFirst } from '../engine/storage.js';
 import { picture } from '../art/pictures.js';
 import { ICON } from '../art/icons.js';
 
@@ -37,7 +38,8 @@ export const lesen = {
       const no = shuffle(content.sentences.filter(s => !s.ok)).slice(0, n / 2);
       return shuffle([...yes, ...no]).map(s => ({ kind: 'satz', s }));
     }
-    const pool = shuffle(content.words.filter(w => w.w.length >= minLen && w.w.length <= maxLen)).slice(0, n);
+    const fits = content.words.filter(w => w.w.length >= minLen && w.w.length <= maxLen);
+    const pool = shuffle(leastSeenFirst(fits, w => 'l:' + w.w).slice(0, n));
     return pool.map((w, i) => {
       const k = kind === 'mix' ? (i % 2 ? 'bildwort' : 'wortbild') : kind;
       return { kind: k, w, options: shuffle([w, ...distractors(w, 2, k === 'bildwort')]) };
@@ -60,6 +62,7 @@ export const lesen = {
       if (!btn || locked || btn.disabled) return;
       if (btn.dataset.w === t.w.w) {
         locked = true;
+        markSeen('l:' + t.w.w);
         btn.classList.add('ok');
         await api.correct({ target: btn, say: t.w.w });
         api.done(tries === 0);

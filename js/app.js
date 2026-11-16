@@ -19,7 +19,7 @@ async function boot() {
 document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('touchmove', e => {
-  if (!e.target.closest('.gallery')) e.preventDefault();
+  if (!e.target.closest('.gallery, .stations')) e.preventDefault();
 }, { passive: false });
 
 // Offline-Betrieb (nur über https bzw. localhost möglich).

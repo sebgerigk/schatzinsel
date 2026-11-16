@@ -3,7 +3,7 @@ import { register, go } from '../engine/router.js';
 import { getState, setSetting, applySettings } from '../engine/storage.js';
 import { P } from '../engine/content.js';
 import { sfx, preload } from '../engine/audio.js';
-import { ISLANDS, ISLAND_ORDER } from '../content/stations.js';
+import { ISLANDS, ISLAND_ORDER, visibleStations } from '../content/stations.js';
 import { islandSvg, shipSvg, compassSvg } from '../art/world.js';
 import { createKoko } from '../art/koko.js';
 import { coinSvg, starSvg } from '../art/icons.js';
@@ -15,11 +15,12 @@ register('map', el => {
   const caps = !!(state.settings && state.settings.caps);
   const islands = ISLAND_ORDER.map(id => {
     const isl = ISLANDS[id];
-    const got = isl.stations.reduce((sum, s) => sum + (state.stars[s.id] || 0), 0);
+    const list = visibleStations(isl, state);
+    const got = list.reduce((sum, s) => sum + (state.stars[s.id] || 0), 0);
     return `<button class="island island-${id}" data-id="${id}">
       ${islandSvg(id)}
       <span class="ribbon">${isl.name}</span>
-      <span class="isl-stars">${starSvg(true)}<b>${got}</b><i>/ ${isl.stations.length * 3}</i></span>
+      <span class="isl-stars">${starSvg(true)}<b>${got}</b><i>/ ${list.length * 3}</i></span>
     </button>`;
   }).join('');
 
@@ -54,6 +55,13 @@ register('map', el => {
     setSetting('caps', on);
     applySettings();
     sfx('pop');
+    // Sternezahl anpassen: mit Großbuchstaben entfallen die Stationen für kleine Buchstaben.
+    ISLAND_ORDER.forEach(id => {
+      const vis = visibleStations(ISLANDS[id], getState());
+      const box = el.querySelector(`.island-${id} .isl-stars`);
+      box.querySelector('b').textContent = vis.reduce((sum, s) => sum + (getState().stars[s.id] || 0), 0);
+      box.querySelector('i').textContent = '/ ' + vis.length * 3;
+    });
     koko.say(P(on ? 'caps_on' : 'caps_off'));
   });
 

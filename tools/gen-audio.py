@@ -37,7 +37,8 @@ def collect():
         texts.extend(value if isinstance(value, list) else [value])
     texts.extend(w["w"] for w in load("words.json"))
     texts.extend(s["t"] for s in load("sentences.json"))
-    texts.extend("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    texts.extend("ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ")
+    texts.append("Eszett")
     texts.extend(NUMBERS)
     seen, unique = set(), []
     for t in texts:

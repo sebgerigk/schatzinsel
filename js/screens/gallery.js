@@ -11,5 +11,5 @@ register('gallery', el => {
   el.innerHTML = `
     <div class="gal-row big">${kokoSvg()}${shipSvg()}${islandSvg('lesen')}${islandSvg('schreiben')}${islandSvg('rechnen')}${chestSvg()}${compassSvg()}</div>
     <div class="gal-row">${content.words.map(w => `<figure>${picture(w.pic)}<figcaption>${w.w}</figcaption></figure>`).join('')}</div>
-    <div class="gal-row">${Object.entries(STROKES).map(([ch, strokes]) => `<figure><svg viewBox="0 0 100 140" class="gal-glyph">${strokes.map(d => `<path d="${d}"/>`).join('')}</svg><figcaption>${ch}</figcaption></figure>`).join('')}</div>`;
+    <div class="gal-row">${Object.entries(STROKES).map(([ch, strokes]) => `<figure><svg viewBox="0 0 100 180" class="gal-glyph">${strokes.map(d => `<path d="${d}"/>`).join('')}</svg><figcaption>${ch}</figcaption></figure>`).join('')}</div>`;
 });

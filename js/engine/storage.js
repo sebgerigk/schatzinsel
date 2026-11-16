@@ -1,7 +1,7 @@
 // Spielstand – liegt ausschließlich lokal auf dem Gerät.
 const KEY = 'schatzinsel.v1';
 
-const defaults = () => ({ coins: 0, stars: {}, played: {}, settings: { caps: false } });
+const defaults = () => ({ coins: 0, stars: {}, played: {}, seen: {}, settings: { caps: false } });
 
 function load() {
   try {
@@ -29,6 +29,23 @@ export function awardStation(id, stars) {
   state.played[id] = (state.played[id] || 0) + 1;
   if (stars > (state.stars[id] || 0)) state.stars[id] = stars;
   save();
+}
+
+/** Wie oft ein Buchstabe, eine Zahl oder ein Wort schon geübt wurde. */
+export const seenCount = key => (state.seen && state.seen[key]) || 0;
+
+export function markSeen(key) {
+  state.seen = state.seen || {};
+  state.seen[key] = (state.seen[key] || 0) + 1;
+  save();
+}
+
+/** Mischt eine Liste und stellt das am seltensten Geübte nach vorn. */
+export function leastSeenFirst(items, keyOf) {
+  return items
+    .map(item => ({ item, n: seenCount(keyOf(item)), r: Math.random() }))
+    .sort((a, b) => a.n - b.n || a.r - b.r)
+    .map(x => x.item);
 }
 
 /** Einstellung ändern, z. B. setSetting('caps', true) für „nur Großbuchstaben". */

@@ -190,9 +190,12 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
 .scene { position: absolute; inset: 0; }
 .scene-svg { width: 100%; height: 100%; }
 .crab { animation: crab 7s ease-in-out infinite alternate; }
-.route { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+.route { position: absolute; inset: 0; width: 100%; height: 100%; }
 .route path { fill: none; stroke: var(--wood2); stroke-width: 9; stroke-dasharray: 1 20; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: .55; }
-.stations { position: absolute; inset: 0; z-index: 3; }
+/* Der Weg ist ein seitlich verschiebbares Band; passt er ganz auf den Bildschirm, steht er mittig. */
+.stations { position: absolute; inset: 0; z-index: 3; display: flex; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; touch-action: pan-x; }
+.stations::-webkit-scrollbar { display: none; }
+.track { position: relative; flex: none; height: 100%; margin: 0 auto; }
 .station { position: absolute; translate: -50% -50%; width: 24vmin; display: flex; flex-direction: column; align-items: center; gap: .7vmin; }
 .medal {
   width: 13.5vmin; height: 13.5vmin; border-radius: 50%; display: grid; place-items: center; font-weight: 900; font-size: 7.4vmin;
@@ -258,6 +261,7 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
   font-size: clamp(52px, 12vmin, 104px); line-height: 1.15; padding: .06em .5em;
 }
 .equation .op { color: var(--coral); }
+.equation .eq-text { font-family: var(--ui); font-weight: 800; font-size: .36em; line-height: 1.15; max-width: 5.2em; text-align: right; }
 .slot {
   min-width: 1.55em; height: 1.18em; display: grid; place-items: center; border-radius: .18em; background: #fff;
   border: 5px dashed #c9a66b; color: #1f5fbf;
@@ -315,6 +319,8 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
 .trace-svg { height: min(61vmin, calc(100vh - var(--top) - var(--deck) - 9vmin)); aspect-ratio: 100 / 140; touch-action: none; overflow: visible; }
 .lines line { stroke: #8ec3e6; stroke-width: .8; }
 .lines .mid { stroke: #f2a59d; stroke-dasharray: 3 3; }
+.lines .low { stroke: #c9dbe8; }
+.trace-svg.lower .ghost path, .trace-svg.lower .ink path { stroke-width: 11.5; }
 .ghost path, .ink path { fill: none; stroke-width: 13; stroke-linecap: round; stroke-linejoin: round; }
 .ghost path { stroke: #efe3c4; }
 .ghost path.now { stroke: #e6d3a3; }

@@ -1,5 +1,14 @@
 // Schreibwege für Druckschrift: pro Zeichen die Striche in Schreibreihenfolge.
 // Raster 100 × 140: Oberlinie y=20, Mittellinie y=70, Grundlinie y=120.
+// Kleinbuchstaben nutzen zusätzlich die Unterlinie y=170 (Raster 100 × 180).
+
+// Wiederkehrende Formen der Kleinbuchstaben
+const BAUCH_LINKS = 'M68 95 Q68 70 49 70 Q30 70 30 95 Q30 120 49 120 Q68 120 68 95';   // a d g q
+const BAUCH_RECHTS = 'M32 95 Q32 70 51 70 Q70 70 70 95 Q70 120 51 120 Q32 120 32 95';  // b p
+const PUNKT = (x, y) => `M${x} ${y} L${x} ${y + 1}`;                                    // i-Punkt, Umlaut-Punkte
+const KLEIN_O = 'M50 70 Q30 70 30 95 Q30 120 50 120 Q70 120 70 95 Q70 70 50 70';
+const KLEIN_U = ['M32 70 L32 100 Q32 120 49 120 Q66 120 68 100', 'M68 70 L68 120'];
+
 export const STROKES = {
   A: ['M50 20 L18 120', 'M50 20 L82 120', 'M29 86 L71 86'],
   B: ['M26 20 L26 120', 'M26 20 L52 20 Q76 20 76 45 Q76 70 52 70 L26 70', 'M26 70 L56 70 Q82 70 82 95 Q82 120 56 120 L26 120'],
@@ -37,4 +46,44 @@ export const STROKES = {
   7: ['M22 20 L78 20 L42 120', 'M40 70 L72 70'],
   8: ['M50 20 Q26 20 26 43 Q26 60 50 68 Q78 78 78 98 Q78 120 50 120 Q22 120 22 98 Q22 78 50 68 Q74 60 74 43 Q74 20 50 20'],
   9: ['M76 48 Q76 20 50 20 Q24 20 24 48 Q24 74 50 74 Q76 74 76 48 L76 90 Q74 120 48 120 Q32 120 26 108'],
+
+  // Große Umlaute: etwas niedriger, damit die Punkte Platz haben
+  'Ä': ['M50 36 L20 120', 'M50 36 L80 120', 'M31 90 L69 90', PUNKT(35, 14), PUNKT(65, 14)],
+  'Ö': ['M50 36 Q20 36 20 78 Q20 120 50 120 Q80 120 80 78 Q80 36 50 36', PUNKT(37, 14), PUNKT(63, 14)],
+  'Ü': ['M24 36 L24 88 Q24 120 50 120 Q76 120 76 88 L76 36', PUNKT(37, 14), PUNKT(63, 14)],
+
+  // Kleinbuchstaben
+  a: [BAUCH_LINKS, 'M68 70 L68 120'],
+  b: ['M32 20 L32 120', BAUCH_RECHTS],
+  c: ['M68 82 Q62 70 50 70 Q30 70 30 95 Q30 120 50 120 Q62 120 68 108'],
+  d: [BAUCH_LINKS, 'M68 20 L68 120'],
+  e: ['M31 95 L69 95 Q69 70 50 70 Q30 70 30 95 Q30 120 50 120 Q62 120 68 110'],
+  f: ['M68 28 Q63 20 55 20 Q44 20 44 34 L44 120', 'M30 70 L62 70'],
+  g: [BAUCH_LINKS, 'M68 70 L68 150 Q68 170 50 170 Q38 170 32 160'],
+  h: ['M32 20 L32 120', 'M32 92 Q34 70 51 70 Q68 70 68 90 L68 120'],
+  i: ['M50 70 L50 120', PUNKT(50, 50)],
+  j: ['M56 70 L56 150 Q56 170 42 170 Q34 170 30 162', PUNKT(56, 50)],
+  k: ['M32 20 L32 120', 'M66 70 L32 100', 'M45 89 L68 120'],
+  l: ['M50 20 L50 120'],
+  m: ['M22 70 L22 120', 'M22 88 Q24 70 36 70 Q50 70 50 88 L50 120', 'M50 88 Q52 70 64 70 Q78 70 78 88 L78 120'],
+  n: ['M32 70 L32 120', 'M32 90 Q34 70 51 70 Q68 70 68 90 L68 120'],
+  o: [KLEIN_O],
+  p: ['M32 70 L32 170', BAUCH_RECHTS],
+  q: [BAUCH_LINKS, 'M68 70 L68 170'],
+  r: ['M36 70 L36 120', 'M36 90 Q38 70 54 70 Q62 70 67 77'],
+  s: ['M66 80 Q62 70 50 70 Q34 70 34 82 Q34 92 50 95 Q66 98 66 108 Q66 120 50 120 Q36 120 32 110'],
+  t: ['M46 30 L46 106 Q46 120 58 120 Q64 120 68 114', 'M30 70 L62 70'],
+  u: KLEIN_U,
+  v: ['M30 70 L50 120 L70 70'],
+  w: ['M20 70 L35 120 L50 80 L65 120 L80 70'],
+  x: ['M32 70 L68 120', 'M68 70 L32 120'],
+  y: ['M32 70 L50 116', 'M68 70 L42 166'],
+  z: ['M32 70 L68 70 L32 120 L68 120'],
+  'ä': [BAUCH_LINKS, 'M68 70 L68 120', PUNKT(39, 50), PUNKT(59, 50)],
+  'ö': [KLEIN_O, PUNKT(40, 50), PUNKT(60, 50)],
+  'ü': [...KLEIN_U, PUNKT(40, 50), PUNKT(60, 50)],
+  'ß': ['M34 120 L34 44 Q34 20 51 20 Q66 20 66 38 Q66 54 50 62 Q70 68 70 92 Q70 120 50 120 Q44 120 40 116'],
 };
+
+/** Kleinbuchstaben brauchen das höhere Raster mit Unterlinie. */
+export const isLower = ch => ch === 'ß' || ch !== ch.toUpperCase();
