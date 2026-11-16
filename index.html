@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Schatzinsel</title>
+<meta name="description" content="Lesen, Schreiben und Rechnen lernen mit Koko dem Papagei.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Schatzinsel">
+<meta name="theme-color" content="#1790b0">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<link rel="icon" type="image/png" href="assets/icons/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+  <!-- Wird ersetzt, sobald die App gestartet ist. Bleibt stehen, wenn etwas schiefgeht. -->
+  <div class="boot" id="boot">
+    <div class="boot-card">
+      <h1>Schatzinsel</h1>
+      <p id="boot-msg">Die Segel werden gesetzt …</p>
+    </div>
+  </div>
+</div>
+<script>
+  // Läuft auch dann, wenn die eigentliche App (ES-Module) nicht starten kann.
+  (function () {
+    var msg = document.getElementById('boot-msg');
+    function show(html) { if (msg && document.getElementById('boot')) msg.innerHTML = html; }
+    if (location.protocol === 'file:') {
+      show('Die App kann nicht direkt als Datei geöffnet werden.<br>' +
+        'Bitte <b>„Schatzinsel starten.command"</b> doppelklicken<br>oder im Browser <b>http://localhost:8137</b> öffnen.<br><br>' +
+        '<small>This app must be opened through a web server, not as a file.</small>');
+      return;
+    }
+    window.addEventListener('error', function (e) {
+      show('Die App konnte nicht starten.<br><small>' + (e.message || 'Unbekannter Fehler') + '</small>');
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      show('Die App konnte nicht starten.<br><small>' + ((e.reason && e.reason.message) || e.reason || 'Unbekannter Fehler') + '</small>');
+    });
+  })();
+</script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
