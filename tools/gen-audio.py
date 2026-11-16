@@ -37,6 +37,10 @@ def collect():
         texts.extend(value if isinstance(value, list) else [value])
     texts.extend(w["w"] for w in load("words.json"))
     texts.extend(s["t"] for s in load("sentences.json"))
+    for story in load("stories.json"):
+        texts.extend(story["lines"])
+        texts.append(story["q"])
+    texts.extend(load("extras.json")["nichtNomen"])
     texts.extend("ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ")
     texts.append("Eszett")
     texts.extend(NUMBERS)

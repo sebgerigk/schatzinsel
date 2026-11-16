@@ -8,22 +8,32 @@ export const ISLANDS = {
     stations: [
       { id: 'lesen-wortbild', title: 'Wort und Bild', game: 'lesen', opts: { kind: 'wortbild', maxLen: 5 } },
       { id: 'lesen-bildwort', title: 'Bild und Wort', game: 'lesen', opts: { kind: 'bildwort', maxLen: 5 } },
-      { id: 'lesen-lang', title: 'Lange Wörter', game: 'lesen', opts: { kind: 'mix', minLen: 5 } },
+      { id: 'lesen-anlaut', title: 'Wie fängt es an?', game: 'lesen', opts: { kind: 'anlaut' } },
+      { id: 'lesen-silben', title: 'Silben bauen', game: 'lesen', opts: { kind: 'silben' } },
+      { id: 'lesen-reim', title: 'Reimwörter', game: 'lesen', opts: { kind: 'reim' } },
+      // match: nur Wörter, in denen dieser Laut vorkommt
+      { id: 'lesen-sch', title: 'Wörter mit Sch', game: 'lesen', opts: { kind: 'mix', match: 'sch' } },
+      { id: 'lesen-ei-ie', title: 'Ei und ie', game: 'lesen', opts: { kind: 'mix', match: 'ei|ie' } },
+      { id: 'lesen-au-eu', title: 'Au und Eu', game: 'lesen', opts: { kind: 'mix', match: 'au|eu' } },
+      { id: 'lesen-lang', title: 'Lange Wörter', game: 'lesen', opts: { kind: 'mix', minLen: 6 } },
       { id: 'lesen-satz', title: 'Stimmt das?', game: 'lesen', opts: { kind: 'satz' } },
+      { id: 'lesen-satzbau', title: 'Sätze bauen', game: 'lesen', opts: { kind: 'satzbau' } },
+      { id: 'lesen-post', title: 'Flaschenpost', game: 'lesen', opts: { kind: 'post' } },
     ],
   },
   schreiben: {
     name: 'Schreibinsel',
     welcome: 'welcome_schreiben',
     stations: [
-      { id: 'schreiben-zahlen', title: 'Zahlen schreiben', game: 'schreiben', opts: { kind: 'trace', chars: '0123456789' } },
-      { id: 'schreiben-gross-am', title: 'Von A bis M', game: 'schreiben', opts: { kind: 'trace', chars: 'ABCDEFGHIJKLM' } },
-      { id: 'schreiben-gross-nz', title: 'Von N bis Z', game: 'schreiben', opts: { kind: 'trace', chars: 'NOPQRSTUVWXYZÄÖÜ' } },
-      // lower: true -> wird ausgeblendet, wenn „nur Großbuchstaben" eingeschaltet ist
-      { id: 'schreiben-klein-am', title: 'Von a bis m', lower: true, game: 'schreiben', opts: { kind: 'trace', chars: 'abcdefghijklm' } },
-      { id: 'schreiben-klein-nz', title: 'Von n bis z', lower: true, game: 'schreiben', opts: { kind: 'trace', chars: 'nopqrstuvwxyzäöüß' } },
       { id: 'schreiben-woerter', title: 'Wörter bauen', game: 'schreiben', opts: { kind: 'tiles', maxLen: 4 } },
       { id: 'schreiben-lang', title: 'Lange Wörter', game: 'schreiben', opts: { kind: 'tiles', minLen: 5 } },
+      { id: 'schreiben-luecke', title: 'Welcher Laut fehlt?', game: 'schreiben', opts: { kind: 'gap' } },
+      { id: 'schreiben-doppelt', title: 'Einer oder zwei?', game: 'schreiben', opts: { kind: 'doppel' } },
+      { id: 'schreiben-hoeren', title: 'Hören und bauen', game: 'schreiben', opts: { kind: 'hoeren', maxLen: 5 } },
+      // lower: true -> wird ausgeblendet, wenn „nur Großbuchstaben" eingeschaltet ist
+      { id: 'schreiben-grossklein', title: 'Groß oder klein?', lower: true, game: 'schreiben', opts: { kind: 'gross' } },
+      { id: 'schreiben-tippen', title: 'Wörter schreiben', game: 'schreiben', opts: { kind: 'tippen', maxLen: 5 } },
+      { id: 'schreiben-diktat', title: 'Diktat', game: 'schreiben', opts: { kind: 'diktat', maxLen: 7 } },
     ],
   },
   rechnen: {

@@ -22,5 +22,17 @@
   {"t": "Ein Schiff fährt auf der Straße.", "ok": false},
   {"t": "Eine Kerze ist aus Eis.", "ok": false},
   {"t": "Ein Tisch kann laufen.", "ok": false},
-  {"t": "Der Mond ist viereckig.", "ok": false}
+  {"t": "Der Mond ist viereckig.", "ok": false},
+  {"t": "Der Hund bellt laut.", "ok": true},
+  {"t": "Die Katze trinkt Milch.", "ok": true},
+  {"t": "Eine Biene kann fliegen.", "ok": true},
+  {"t": "Eine Schnecke ist langsam.", "ok": true},
+  {"t": "Feuer ist heiß.", "ok": true},
+  {"t": "Ein Schaf hat Wolle.", "ok": true},
+  {"t": "Eine Schnecke ist schnell.", "ok": false},
+  {"t": "Ein Stein kann schwimmen.", "ok": false},
+  {"t": "Ein Frosch hat Federn.", "ok": false},
+  {"t": "Eine Kuh legt Eier.", "ok": false},
+  {"t": "Ein Stuhl kann fliegen.", "ok": false},
+  {"t": "Ein Hase hat kurze Ohren.", "ok": false}
 ]

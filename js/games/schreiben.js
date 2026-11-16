@@ -1,7 +1,10 @@
-// Schreibinsel: Buchstaben/Zahlen nachspuren und Wörter aus Buchstaben-Plättchen bauen.
-import { shuffle, shake, burst } from '../engine/util.js';
+// Schreibinsel: Wörter bauen, fehlende Laute finden, Groß-/Kleinschreibung, Diktat mit Plättchen und Tastatur.
+// (Das Nachspuren einzelner Buchstaben gibt es weiterhin als Aufgabenart 'trace', es liegt aber nicht mehr auf dem Weg.)
+import { shuffle, pick, shake } from '../engine/util.js';
 import { content, P, NUMWORDS } from '../engine/content.js';
 import { sfx, speak } from '../engine/audio.js';
+import { ICON } from '../art/icons.js';
+import { mountBuild } from './build.js';
 import { picture } from '../art/pictures.js';
 import { STROKES, isLower } from '../content/strokes.js';
 import { markSeen, leastSeenFirst } from '../engine/storage.js';
@@ -11,20 +14,79 @@ const STEP = 2.5;        // Abstand der Prüfpunkte entlang des Strichs (Raster-
 const LOOKAHEAD = 5;     // so viele Prüfpunkte darf man „vorausgreifen"
 const TOL = { touch: 15, mouse: 15, pen: 10 };  // erlaubter Abstand zur Linie
 
+/* ---------- Lücken: welcher Laut / wie viele Buchstaben fehlen? ---------- */
+
+// Laute, die leicht verwechselt werden. [Muster, Auswahl]
+const LAUTE = [[/sch/i, ['sch', 'ch']], [/(?<!s)ch/i, ['ch', 'sch']], [/ei|ie/i, ['ei', 'ie']], [/au|eu/i, ['au', 'eu']]];
+
+/** Sucht in einem Wort einen dieser Laute und macht daraus eine Lücke. */
+function lautGap(word) {
+  const found = [];
+  for (const [re, options] of LAUTE) {
+    const m = re.exec(word);
+    if (!m) continue;
+    const fix = o => (m.index === 0 ? o[0].toUpperCase() + o.slice(1) : o);   // am Wortanfang groß
+    found.push({ start: m.index, len: m[0].length, answer: m[0], options: options.map(fix) });
+  }
+  return found.length ? pick(found) : null;
+}
+
+/** Doppelter Mitlaut (Sonne, Schiff) oder ck. */
+function doppelGap(word) {
+  const m = /([bdfglmnprst])\1|ck/.exec(word);
+  if (!m) return null;
+  const single = m[0] === 'ck' ? 'k' : m[1];
+  return { start: m.index, len: 2, answer: m[0], options: [m[0], single] };
+}
+
+// Wörter mit langem Selbstlaut: hier steht der Mitlaut nur einmal.
+const EINFACH = { Hose: 's', Nase: 's', Vase: 's', Rose: 's', Dose: 's', Hase: 's', Blume: 'm', Krone: 'n', Schere: 'r', Igel: 'g', Raupe: 'p', Eule: 'l', Biene: 'n', Ziege: 'g' };
+function einfachGap(word) {
+  const c = EINFACH[word];
+  return { start: word.lastIndexOf(c), len: 1, answer: c, options: [c + c, c] };
+}
+
+const INTRO = { trace: 'trace_intro', tiles: 'tiles_intro', gap: 'gap_intro', doppel: 'doppel_intro', hoeren: 'hoeren_intro', gross: 'gross_intro', tippen: 'tippen_intro', diktat: 'diktat_intro' };
+
 export const schreiben = {
-  intro: opts => P(opts.kind === 'trace' ? 'trace_intro' : 'tiles_intro'),
+  intro: opts => P(INTRO[opts.kind]),
 
   makeTasks({ kind, chars = '', minLen = 0, maxLen = 99, n }) {
-    if (kind === 'trace') {
-      // Zeichen, die noch selten geübt wurden, kommen zuerst dran.
-      return shuffle(leastSeenFirst([...chars], ch => 'z:' + ch).slice(0, n || 6)).map(ch => ({ kind, ch }));
+    const words = content.words.filter(w => w.w.length >= minLen && w.w.length <= maxLen);
+    // Selten Geübtes kommt zuerst dran.
+    const take = (pool, prefix, count) => shuffle(leastSeenFirst(pool, w => prefix + w.w).slice(0, count));
+    switch (kind) {
+      case 'trace':
+        return shuffle(leastSeenFirst([...chars], ch => 'z:' + ch).slice(0, n || 6)).map(ch => ({ kind, ch }));
+      case 'gap':
+        return take(words.filter(w => lautGap(w.w)), 'k:', n || 8).map(w => ({ kind, w, gap: lautGap(w.w) }));
+      case 'doppel': {
+        const two = take(words.filter(w => doppelGap(w.w)), 'k:', 5).map(w => ({ kind, w, gap: doppelGap(w.w) }));
+        const one = take(words.filter(w => EINFACH[w.w]), 'k:', 3).map(w => ({ kind, w, gap: einfachGap(w.w) }));
+        return shuffle([...two, ...one]);
+      }
+      case 'gross': {
+        const nouns = take(words, 'n:', 4).map(w => ({ kind, text: w.w, noun: true }));
+        const others = shuffle(content.extras.nichtNomen).slice(0, 4).map(text => ({ kind, text, noun: false }));
+        return shuffle([...nouns, ...others]);
+      }
+      case 'hoeren': return take(words, 'h:', n || 6).map(w => ({ kind, w }));
+      case 'tippen': return take(words, 't:', n || 6).map(w => ({ kind, w }));
+      case 'diktat': return take(words, 'd:', n || 6).map(w => ({ kind, w }));
+      default: return take(words, 'w:', n || 6).map(w => ({ kind, w }));
     }
-    const pool = content.words.filter(w => w.w.length >= minLen && w.w.length <= maxLen);
-    return shuffle(leastSeenFirst(pool, w => 'w:' + w.w).slice(0, n || 6)).map(w => ({ kind, w }));
   },
 
   mount(root, t, api) {
-    return t.kind === 'trace' ? mountTrace(root, t, api) : mountTiles(root, t, api);
+    switch (t.kind) {
+      case 'trace': return mountTrace(root, t, api);
+      case 'gap': case 'doppel': return mountGap(root, t, api);
+      case 'gross': return mountGross(root, t, api);
+      case 'tippen': return mountType(root, t, api, true);
+      case 'diktat': return mountType(root, t, api, false);
+      case 'hoeren': return mountTiles(root, t, api, false);
+      default: return mountTiles(root, t, api, true);
+    }
   },
 };
 
@@ -165,46 +227,118 @@ function mountTrace(root, t, api) {
   setStroke(0);
 }
 
-/* ---------- Wörter bauen ---------- */
+/* ---------- Wörter bauen (mit Bild oder nur nach Gehör) ---------- */
 
-function mountTiles(root, t, api) {
+function mountTiles(root, t, api, withPicture) {
+  const word = t.w.w;
+  // Fremde Buchstaben dazumischen, die im Wort nicht vorkommen – nach Gehör einen mehr.
+  const extras = shuffle([...'aeinrstlmoubdkh'].filter(c => !word.toLowerCase().includes(c))).slice(0, withPicture ? 2 : 3);
+  mountBuild(root, {
+    parts: [...word], extras, pic: withPicture ? picture(t.w.pic) : null, say: word,
+    onSolved: () => markSeen((withPicture ? 'w:' : 'h:') + word),
+  }, api);
+}
+
+/* ---------- Lückenwort ---------- */
+
+function mountGap(root, t, api) {
+  const word = t.w.w, g = t.gap;
+  root.innerHTML = `<div class="read gap">
+    <button class="prompt panel pic-word listen" aria-label="Anhören">${picture(t.w.pic)}
+      <span>${word.slice(0, g.start)}<span class="gap-slot">__</span>${word.slice(g.start + g.len)}</span>
+    </button>
+    <div class="choices">${shuffle(g.options).map(o => `<button class="choice panel choice-word" data-o="${o}">${o}</button>`).join('')}</div>
+  </div>`;
+  let tries = 0, locked = false;
+  api.ready.then(() => { if (api.alive() && !locked) speak(word); });
+  root.querySelector('.listen').addEventListener('click', () => { if (!locked) speak(word); });
+  root.querySelector('.choices').addEventListener('click', async e => {
+    const btn = e.target.closest('.choice');
+    if (!btn || locked || btn.disabled) return;
+    if (btn.dataset.o === g.answer) {
+      locked = true;
+      markSeen('k:' + word);
+      btn.classList.add('ok');
+      const slot = root.querySelector('.gap-slot');
+      slot.textContent = g.answer;
+      slot.classList.add('filled');
+      await api.correct({ target: root.querySelector('.pic-word'), say: word });
+      api.done(tries === 0);
+    } else {
+      tries++;
+      btn.disabled = true;
+      btn.classList.add('no');
+      api.wrong({ target: btn });
+    }
+  });
+}
+
+/* ---------- Groß oder klein? ---------- */
+
+function mountGross(root, t, api) {
+  const upper = t.text[0].toUpperCase() + t.text.slice(1);
+  const lower = t.text.toLowerCase();
+  const right = t.noun ? upper : lower;
+  root.innerHTML = `<div class="read gross">
+    <button class="listen-btn listen big">${ICON.sound}<span>Anhören</span></button>
+    <div class="choices">${shuffle([upper, lower]).map(o => `<button class="choice panel choice-word" data-o="${o}">${o}</button>`).join('')}</div>
+  </div>`;
+  let locked = false;
+  api.ready.then(() => { if (api.alive() && !locked) speak(t.text); });
+  root.querySelector('.listen').addEventListener('click', () => { if (!locked) speak(t.text); });
+  root.querySelector('.choices').addEventListener('click', async e => {
+    const btn = e.target.closest('.choice');
+    if (!btn || locked) return;
+    locked = true;
+    const ok = btn.dataset.o === right;
+    [...root.querySelectorAll('.choice')].find(b => b.dataset.o === right).classList.add('ok');
+    if (ok) {
+      if (t.noun) markSeen('n:' + t.text);
+      await api.correct({ target: btn, say: t.text });
+    } else {
+      sfx('wrong');
+      btn.classList.add('no');
+      await api.koko.say(P('solution'));
+    }
+    api.done(ok);
+  });
+}
+
+/* ---------- Wort mit der Buchstaben-Tastatur schreiben ---------- */
+
+const TASTEN = [...'abcdefghijklmnopqrstuvwxyzäöüß'];
+
+function mountType(root, t, api, withPicture) {
   const word = t.w.w;
   const letters = [...word];
-  const extra = shuffle([...'aeinrstlmoubdkh'].filter(c => !word.toLowerCase().includes(c))).slice(0, 2);
-  const tiles = shuffle([...letters.map((c, i) => ({ c, i })), ...extra.map(c => ({ c, i: -1 }))]);
-
-  root.innerHTML = `<div class="build">
-    <button class="pic-card panel build-pic" aria-label="Wort anhören">${picture(t.w.pic)}</button>
+  root.innerHTML = `<div class="typing">
+    ${withPicture
+      ? `<button class="pic-card panel build-pic listen" aria-label="Anhören">${picture(t.w.pic)}</button>`
+      : `<button class="listen-btn listen">${ICON.sound}<span>Anhören</span></button>`}
     <div class="slots">${letters.map(() => '<span class="slot-l"></span>').join('')}</div>
-    <div class="tiles">${tiles.map(tl => `<button class="tile" data-c="${tl.c}">${tl.c}</button>`).join('')}</div>
+    <div class="kb">${TASTEN.map(c => `<button class="kb-key" data-c="${c}">${c}</button>`).join('')}</div>
   </div>`;
-
   const slots = [...root.querySelectorAll('.slot-l')];
+  const keys = [...root.querySelectorAll('.kb-key')];
   let pos = 0, mistakes = 0, missHere = 0, locked = false;
   slots[0].classList.add('next');
-
   api.ready.then(() => { if (api.alive() && pos === 0) speak(word); });
-  root.querySelector('.build-pic').addEventListener('click', () => { if (!locked) speak(word); });
+  root.querySelector('.listen').addEventListener('click', () => { if (!locked) speak(word); });
 
-  root.querySelector('.tiles').addEventListener('click', async e => {
-    const tile = e.target.closest('.tile');
-    if (!tile || locked || tile.classList.contains('used')) return;
-    if (tile.dataset.c === letters[pos]) {
+  root.querySelector('.kb').addEventListener('click', async e => {
+    const key = e.target.closest('.kb-key');
+    if (!key || locked) return;
+    if (key.dataset.c === letters[pos].toLowerCase()) {
       sfx('pop');
-      tile.classList.add('used');
-      root.querySelectorAll('.tile.hint').forEach(n => n.classList.remove('hint'));
-      slots[pos].textContent = letters[pos];
+      keys.forEach(k => k.classList.remove('hint'));
+      slots[pos].textContent = letters[pos];   // Großbuchstabe am Wortanfang kommt von selbst
       slots[pos].classList.remove('next');
       slots[pos].classList.add('set');
-      burst(slots[pos], { n: 5, spread: 40 });
       pos++;
       missHere = 0;
-      if (pos < letters.length) {
-        slots[pos].classList.add('next');
-        return;
-      }
+      if (pos < letters.length) { slots[pos].classList.add('next'); return; }
       locked = true;
-      markSeen('w:' + word);
+      markSeen((withPicture ? 't:' : 'd:') + word);
       root.querySelector('.slots').classList.add('ok');
       await api.correct({ target: root.querySelector('.slots'), say: word });
       api.done(mistakes === 0);
@@ -212,12 +346,8 @@ function mountTiles(root, t, api) {
       mistakes++;
       missHere++;
       sfx('wrong');
-      shake(tile);
-      if (missHere >= 2) {
-        // Nach zwei Fehlversuchen zeigt Koko den richtigen Buchstaben.
-        const right = [...root.querySelectorAll('.tile:not(.used)')].find(n => n.dataset.c === letters[pos]);
-        if (right) right.classList.add('hint');
-      }
+      shake(key);
+      if (missHere >= 2) keys.find(k => k.dataset.c === letters[pos].toLowerCase()).classList.add('hint');
     }
   });
 }

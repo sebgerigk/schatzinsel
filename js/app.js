@@ -2,7 +2,7 @@
 import { go } from './engine/router.js';
 import { loadContent } from './engine/content.js';
 import { initAudio } from './engine/audio.js';
-import { applySettings } from './engine/storage.js';
+import { applySettings, requestPersistence } from './engine/storage.js';
 import './screens/title.js';
 import './screens/map.js';
 import './screens/island.js';
@@ -11,6 +11,7 @@ import './screens/gallery.js';
 
 async function boot() {
   applySettings();
+  requestPersistence();
   await Promise.all([loadContent(), initAudio()]);
   go(location.hash === '#galerie' ? 'gallery' : 'title');
 }

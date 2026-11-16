@@ -5,6 +5,7 @@ import { shipSvg, skySvg, palm } from '../art/world.js';
 import { kokoSvg } from '../art/koko.js';
 import { ICON } from '../art/icons.js';
 import { INK } from '../engine/util.js';
+import { storageOk } from '../engine/storage.js';
 
 const letters = word => [...word].map((c, i) => `<span style="--i:${i}">${c}</span>`).join('');
 
@@ -22,7 +23,8 @@ register('title', el => {
     <div class="wave wave-1"></div>
     <h1 class="logo" aria-label="Schatzinsel"><span class="logo-row">${letters('Schatz')}</span><span class="logo-row">${letters('insel')}</span></h1>
     <div class="title-koko">${kokoSvg()}</div>
-    <button class="btn gold big start">${ICON.play}<span>Los geht's!</span></button>`;
+    <button class="btn gold big start">${ICON.play}<span>Los geht's!</span></button>
+    ${storageOk ? '' : '<p class="storage-warning">Achtung: Auf diesem Gerät kann der Spielstand nicht gespeichert werden. In den Safari-Einstellungen „Alle Cookies blockieren" ausschalten und nicht im privaten Modus öffnen.</p>'}`;
 
   el.querySelector('.start').addEventListener('click', () => {
     unlockAudio();

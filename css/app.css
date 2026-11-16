@@ -149,6 +149,7 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
 .logo-row span { display: inline-block; animation: letterBob 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * .13s); }
 .logo-row:nth-child(2) span { animation-delay: calc((var(--i) + 6) * .13s); }
 .title-koko { position: absolute; left: 6vw; bottom: 7vmin; width: 27vmin; z-index: 6; animation: kokoBob 3.2s ease-in-out infinite; }
+.storage-warning { position: absolute; left: 50%; top: 24vmin; translate: -50% 0; z-index: 8; width: min(86vw, 640px); background: #fff3a8; border: 4px solid var(--ink); border-radius: 2vmin; padding: 1.2vmin 2vmin; font-weight: 700; font-size: clamp(15px, 2.4vmin, 22px); text-align: center; text-transform: none; }
 .start { position: absolute; left: 50%; bottom: 8vmin; translate: -50% 0; z-index: 7; animation: pulseBtn 1.7s ease-in-out infinite; }
 
 /* ---------- Schatzkarte ---------- */
@@ -301,6 +302,38 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
 .choice.ok { background: #c9f2d3; border-color: var(--green2); animation: okPop .45s; }
 .choice.no { opacity: .38; filter: grayscale(.7); }
 .sentence { font-family: var(--read); font-weight: 500; font-size: clamp(32px, 6.4vmin, 60px); line-height: 1.3; padding: .55em .9em; max-width: 88vw; text-align: center; background: #fff; }
+/* Anlaute, Reime, Geschichten */
+.anlaut { min-width: 26vmin; text-align: center; color: #1f5fbf; }
+.read.reim { gap: 3vmin; }
+.pic-word { display: flex; align-items: center; gap: 3vmin; padding: 1.2vmin 4.4vmin 1.2vmin 2vmin; background: #fff; font-family: var(--read); font-weight: 700; font-size: clamp(44px, 10vmin, 90px); line-height: 1.1; }
+.pic-word .pic { width: 17vmin; height: 17vmin; }
+.choice-pic.labeled { width: 25vmin; height: auto; display: flex; flex-direction: column; align-items: center; gap: .4vmin; padding: 1.4vmin 1.4vmin 1vmin; }
+.choice-pic.labeled .pic { width: 18.5vmin; height: 18.5vmin; }
+.cap { font-family: var(--read); font-weight: 700; font-size: clamp(22px, 4.4vmin, 40px); line-height: 1.15; }
+.read.post { gap: 2.2vmin; }
+.story { position: relative; background: #fff; padding: 1.8vmin 13vmin 1.8vmin 3vmin; max-width: 92vw; font-family: var(--read); font-weight: 500; font-size: clamp(20px, 3.9vmin, 36px); line-height: 1.38; }
+.story p { margin: 0; }
+.story .listen-btn { position: absolute; right: 1.6vmin; top: 1.6vmin; padding: .45em; font-size: clamp(22px, 3.6vmin, 34px); }
+.question { font-family: var(--read); font-weight: 700; font-size: clamp(22px, 4.4vmin, 40px); color: #1f5fbf; text-align: center; }
+.post .choice-pic.labeled { width: 20vmin; }
+.post .choice-pic.labeled .pic { width: 13.5vmin; height: 13.5vmin; }
+.post .cap { font-size: clamp(17px, 3.2vmin, 29px); }
+.post .choice-pic.labeled { width: 22vmin; }
+.listen-btn {
+  display: inline-flex; align-items: center; gap: .4em; font-weight: 800; font-size: clamp(18px, 2.9vmin, 27px);
+  background: #fff3a8; border: 4px solid var(--ink); border-radius: 999px; padding: .3em 1em; box-shadow: 0 .6vmin 0 var(--ink);
+}
+.listen-btn:active { transform: translateY(.4vmin); box-shadow: 0 .2vmin 0 var(--ink); }
+html.caps .story { font-size: clamp(18px, 3.3vmin, 30px); }
+html.caps .pic-word { font-size: clamp(40px, 8.6vmin, 78px); }
+
+/* Lückenwort, Groß/klein */
+button.pic-word { font-family: var(--read); font-weight: 700; }
+.gap-slot { display: inline-block; min-width: 1.2em; margin: 0 .05em; text-align: center; color: var(--coral); border-bottom: .09em solid var(--coral); line-height: .95; }
+.gap-slot.filled { color: var(--green2); border-color: transparent; }
+.read.gross { gap: 6vmin; }
+.listen-btn.big { font-size: clamp(24px, 4.6vmin, 42px); padding: .5em 1.5em; }
+
 .yesno { display: flex; gap: 9vmin; }
 .yn {
   width: 19vmin; height: 19vmin; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -353,6 +386,21 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
 }
 .tile:active { transform: translateY(.6vmin); box-shadow: 0 .3vmin 0 var(--ink); }
 .tile.used { visibility: hidden; }
+/* Buchstaben-Tastatur */
+.typing { display: flex; flex-direction: column; align-items: center; gap: 2.2vmin; }
+.typing .build-pic { width: 18vmin; height: 18vmin; }
+.typing .slots { padding: 0; }
+.kb { display: grid; grid-template-columns: repeat(10, 1fr); gap: 1vmin; }
+.kb-key {
+  width: 8.4vmin; height: 8.4vmin; border-radius: 1.8vmin; font-family: var(--read); font-weight: 700; font-size: 5vmin; line-height: 1;
+  background: var(--cream); border: 3px solid var(--ink); box-shadow: 0 .7vmin 0 var(--ink); transition: transform .06s, box-shadow .06s;
+}
+.kb-key:active { transform: translateY(.5vmin); box-shadow: 0 .2vmin 0 var(--ink); }
+.kb-key.hint { background: #b9f0c6; animation: pulse 1s ease-in-out infinite; }
+/* Breite Plättchen für Silben und ganze Wörter */
+.build.wide .slots { flex-wrap: wrap; justify-content: center; max-width: 94vw; }
+.build.wide .slot-l { width: auto; min-width: 11vmin; height: 9.6vmin; padding: 0 .3em; font-size: 5.4vmin; }
+.build.wide .tile { width: auto; min-width: 10.4vmin; height: 9.8vmin; padding: 0 .45em; font-size: 5.4vmin; }
 .tile.hint { background: #b9f0c6; animation: pulse 1s ease-in-out infinite; }
 
 /* ---------- Ergebnis ---------- */
@@ -426,6 +474,7 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
   .medal { width: 12vmin; height: 12vmin; font-size: 6.4vmin; }
   .st-title { font-size: clamp(12px, 2.1vmin, 18px); padding: .1em .45em; }
   .slot-l { width: 8.4vmin; height: 10.4vmin; font-size: 7vmin; }
+  .kb-key { width: 8vmin; height: 8.6vmin; }
   .bubble { max-width: 62vw; }
 }
 

@@ -11,6 +11,7 @@ export const ICON = {
   lock: wrap('<path d="M16 22 V16 a8 8 0 0 1 16 0 V22" stroke-width="5"/><rect x="10" y="22" width="28" height="20" rx="5" fill="currentColor" stroke-width="3"/>'),
   play: wrap('<path d="M17 10 L38 24 L17 38Z" fill="currentColor"/>'),
   bulb: wrap('<path d="M24 6 a12 12 0 0 1 7 21.6 V32 H17 v-4.4 A12 12 0 0 1 24 6Z" stroke-width="4.5"/><path d="M19 40 h10" stroke-width="5"/>'),
+  sound: wrap('<path d="M7 19 h8 l11 -9 v28 l-11 -9 h-8Z" fill="currentColor" stroke-width="4"/><path d="M33 17 q6 7 0 14 M38 11 q11 13 0 26" stroke-width="4.5"/>'),
   again: wrap('<path d="M38 24 a14 14 0 1 1 -5 -10.8" stroke-width="5.5"/><path d="M35 4 V14 H25" stroke-width="5.5"/>'),
 };
 

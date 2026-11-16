@@ -11,6 +11,24 @@ function load() {
   }
 }
 
+/** false, wenn der Browser nichts speichern darf (z. B. Safari mit blockierten Cookies). */
+export const storageOk = (() => {
+  try {
+    localStorage.setItem(KEY + '.test', '1');
+    localStorage.removeItem(KEY + '.test');
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
+/** Bittet das Gerät, den Spielstand nicht von selbst aufzuräumen. */
+export function requestPersistence() {
+  try {
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  } catch { /* nicht überall verfügbar */ }
+}
+
 let state = load();
 
 export function getState() {

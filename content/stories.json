@@ -1,0 +1,130 @@
+[
+ {
+  "id": "apfel",
+  "lines": [
+   "Koko hat Hunger.",
+   "Er fliegt zu einem Baum.",
+   "Dort hängt ein roter Apfel.",
+   "Koko frisst den Apfel auf."
+  ],
+  "q": "Was frisst Koko?",
+  "options": [
+   "Apfel",
+   "Banane",
+   "Brot"
+  ],
+  "answer": "Apfel"
+ },
+ {
+  "id": "hut",
+  "lines": [
+   "Der Pirat sucht seinen Hut.",
+   "Der Hut ist nicht im Schiff.",
+   "Er ist auch nicht in der Kiste.",
+   "Der Hut liegt unter dem Tisch."
+  ],
+  "q": "Wo liegt der Hut?",
+  "options": [
+   "Kiste",
+   "Tisch",
+   "Schiff"
+  ],
+  "answer": "Tisch"
+ },
+ {
+  "id": "eule",
+  "lines": [
+   "Es ist Nacht.",
+   "Der Mond scheint hell.",
+   "Eine Eule sitzt im Baum.",
+   "Sie sucht eine Maus."
+  ],
+  "q": "Wen sucht die Eule?",
+  "options": [
+   "Katze",
+   "Fisch",
+   "Maus"
+  ],
+  "answer": "Maus"
+ },
+ {
+  "id": "katze",
+  "lines": [
+   "Lina hat eine Katze.",
+   "Die Katze heißt Mia.",
+   "Mia trinkt gern Milch.",
+   "Dann schläft sie auf dem Bett."
+  ],
+  "q": "Was trinkt Mia?",
+  "options": [
+   "Milch",
+   "Eis",
+   "Kuchen"
+  ],
+  "answer": "Milch"
+ },
+ {
+  "id": "boot",
+  "lines": [
+   "Tom geht zum See.",
+   "Er hat ein kleines Boot.",
+   "Im Wasser schwimmt eine Ente.",
+   "Tom winkt der Ente zu."
+  ],
+  "q": "Was hat Tom?",
+  "options": [
+   "Auto",
+   "Boot",
+   "Ball"
+  ],
+  "answer": "Boot"
+ },
+ {
+  "id": "oma",
+  "lines": [
+   "Heute hat Oma Geburtstag.",
+   "Mama backt einen Kuchen.",
+   "Papa kauft eine Rose.",
+   "Ich male ein Herz."
+  ],
+  "q": "Was kauft Papa?",
+  "options": [
+   "Kuchen",
+   "Herz",
+   "Rose"
+  ],
+  "answer": "Rose"
+ },
+ {
+  "id": "schnecke",
+  "lines": [
+   "Eine Schnecke will zum Zaun.",
+   "Der Weg ist weit.",
+   "Sie kriecht den ganzen Tag.",
+   "Am Abend ist sie endlich da."
+  ],
+  "q": "Wohin will die Schnecke?",
+  "options": [
+   "Zaun",
+   "Haus",
+   "Stein"
+  ],
+  "answer": "Zaun"
+ },
+ {
+  "id": "schatz",
+  "lines": [
+   "Koko findet einen Schlüssel.",
+   "Der Schlüssel passt in die Kiste.",
+   "In der Kiste liegt eine Krone.",
+   "Koko setzt die Krone auf."
+  ],
+  "q": "Was liegt in der Kiste?",
+  "options": [
+   "Schlüssel",
+   "Krone",
+   "Hut"
+  ],
+  "answer": "Krone"
+ }
+]
