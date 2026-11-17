@@ -6,6 +6,8 @@ import { ISLANDS, ISLAND_ORDER, part2Visible } from '../content/stations.js';
 import { content } from '../engine/content.js';
 import { minutesToday, lastDays, addBonus, timeIsUp } from '../engine/playtime.js';
 import { ICON } from '../art/icons.js';
+import { SHIPYARD } from '../content/shipyard.js';
+import { achievement } from '../content/schaetze.js';
 
 const TABS = [['fortschritt', 'Fortschritt'], ['zeit', 'Spielzeit'], ['inhalte', 'Inhalte'], ['stand', 'Spielstand']];
 const LIMITS = [0, 10, 15, 20, 30, 45];
@@ -15,6 +17,9 @@ const fmtDate = key => {
   const [y, m, d] = key.split('-');
   return `${Number(d)}.${Number(m)}.`;
 };
+/** Ehren-Schätze der Werft mit ihrem Fortschritt (für die Fortschritts-Übersicht). */
+const honors = () => SHIPYARD.flatMap(c => c.items).filter(item => item.needs)
+  .map(item => ({ name: item.name, ...achievement(item.needs, getState()) }));
 const countSeen = prefix => Object.keys(getState().seen || {}).filter(k => k.startsWith(prefix)).length;
 
 function progressHtml() {
@@ -47,6 +52,8 @@ function progressHtml() {
     <p>Wörter gelesen: ${countSeen('l:')} von ${content.words.length} · Wörter geschrieben: ${countSeen('w:') + countSeen('t:') + countSeen('d:') + countSeen('h:')}
       · Geschichten gelesen: ${countSeen('g:')} von ${content.stories.length}
       · Seekarten gelöst: ${countSeen('p:')} · am Kartentisch: ${werkstatt().raetsel.length} Rätsel gebaut, ${werkstatt().bilder.length} Bilder gemalt</p>
+    <p>Ehren-Schätze in der Werft freigeschaltet: ${honors().filter(h => h.done).length} von ${honors().length}
+      (${honors().map(h => `${h.name} ${h.have}/${h.want}`).join(' · ')})</p>
     <p class="hint">Die Kompass-Medaille gibt es auf der Programmierinsel, wenn alle Aufgaben einer Runde mit der kürzesten möglichen Lösung geschafft wurden.</p>
     <p class="hint">Ein Stern heißt geschafft, drei Sterne heißt: alles beim ersten Versuch richtig.</p>
     ${tables}`;

@@ -1,6 +1,11 @@
 // Schatzkarte: Auswahl der Inseln.
 import { register, go } from '../engine/router.js';
-import { getState, setSetting, applySettings, settings } from '../engine/storage.js';
+import { getState, setSetting, applySettings, settings, hasFlag, setFlag, takeCelebration } from '../engine/storage.js';
+import { burst } from '../engine/util.js';
+import { SHIPYARD } from '../content/shipyard.js';
+import { achievement } from '../content/schaetze.js';
+import { shipSound } from './werft.js';
+import { rainbowShape, burstShape, whaleShape, spoutShape, dolphinShape } from '../art/schaetze.js';
 import { openGate } from './gate.js';
 import { P } from '../engine/content.js';
 import { sfx, preload } from '../engine/audio.js';
@@ -36,8 +41,21 @@ register('map', el => {
     </button>`;
   }).join('');
 
+  // Schätze aus der Werft, die auf der Schatzkarte zu sehen sind
+  const on = id => (state.ship.extras || []).includes(id);
+  if (on('nacht')) el.classList.add('night');
+  const decor = [
+    on('nacht') ? '<div class="map-night"><i class="moon"></i></div>' : '',
+    on('regenbogen') ? `<div class="map-rainbow">${rainbowShape()}</div>` : '',
+    on('feuerwerk') ? `<div class="map-fireworks">${['#f0553f', '#ffcb3d', '#45b565', '#ff8fb3'].map((c, i) => `<span style="--i:${i}">${burstShape(c)}</span>`).join('')}</div>` : '',
+    on('schnee') ? `<div class="map-snow">${Array.from({ length: 36 }, (_, i) => `<i style="--x:${(i * 37) % 100};--d:${(i * 7) % 10};--s:${0.6 + (i % 4) * 0.25}"></i>`).join('')}</div>` : '',
+    on('wal') ? `<div class="map-whale"><svg viewBox="-6 -40 200 124" aria-hidden="true">${whaleShape()}<g transform="translate(44 -18)"><g class="spout">${spoutShape()}</g></g></svg></div>` : '',
+    on('delfin') ? `<div class="map-dolphin"><svg viewBox="-4 -4 130 76" aria-hidden="true">${dolphinShape()}</svg></div>` : '',
+  ].join('');
+
   el.innerHTML = `
     <div class="map-sea"></div>
+    ${decor}
     <svg class="map-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${route(shown.length)}"/></svg>
     <header class="hud">
       <div class="plank">Schatzkarte</div>
@@ -55,7 +73,24 @@ register('map', el => {
 
   const koko = createKoko();
   el.appendChild(koko.el);
-  if (!greeted) { greeted = true; koko.say(P('map')); } else koko.show(P('map_again'));
+  // Ein Ehren-Schatz ist neu freigeschaltet? Koko sagt es einmal.
+  const fresh = SHIPYARD.flatMap(c => c.items).filter(item => item.needs && !hasFlag('schatzAngesagt', item.id) && achievement(item.needs, state).done);
+  if (fresh.length) {
+    greeted = true;
+    fresh.forEach(item => setFlag('schatzAngesagt', item.id));
+    koko.cheer();
+    koko.say(P('schatz_neu'));
+  } else if (!greeted) { greeted = true; koko.say(P('map')); } else koko.show(P('map_again'));
+
+  // Konfettikanone: nach einer Runde mit Münzen schießt das Schiff Konfetti.
+  if (takeCelebration() && on('konfetti')) {
+    setTimeout(() => {
+      const ship = el.querySelector('.map-ship');
+      if (!ship || !ship.isConnected) return;
+      sfx('boom');
+      burst(ship, { n: 22, spread: 190 });
+    }, 700);
+  }
   preload(shown.map(id => P(ISLANDS[id].welcome)));
   el.querySelector('.parents').addEventListener('click', () => openGate(() => go('eltern')));
 
@@ -77,7 +112,8 @@ register('map', el => {
     koko.say(P(on ? 'caps_on' : 'caps_off'));
   });
 
-  el.querySelector('.map-ship').addEventListener('click', () => { sfx('sail'); go('werft'); });
+  // Mit Glocke, Horn oder Lied an Bord klingt das Schiff beim Losfahren zur Werft.
+  el.querySelector('.map-ship').addEventListener('click', () => { sfx(shipSound(state.ship.extras) || 'sail'); go('werft'); });
 
   el.querySelector('.islands').addEventListener('click', e => {
     const btn = e.target.closest('.island');

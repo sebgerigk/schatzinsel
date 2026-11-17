@@ -713,6 +713,42 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
 .island-programmieren .ribbon { background: #1fa3a8; }
 .helm-wheel { transform-box: fill-box; transform-origin: center; animation: wheelTurn 9s ease-in-out infinite; }
 
+/* ---------- Werft: Schätze ---------- */
+.shop-tab.special { background: linear-gradient(#fff3a8, #ffcb3d); }
+.shop-tab.special[aria-selected="true"] { background: linear-gradient(#ffe58a, #e9a21f); }
+.item.special { border-color: #c98a12; box-shadow: inset 0 0 0 .5vmin #ffe58a; }
+.item.special.equipped { background: #c9f2d3; }
+.item.locked .ship-svg { filter: grayscale(.75) brightness(1.05); opacity: .7; }
+.item-tag.need { gap: .2em; color: #7a674c; }
+.item-tag.need .icon { width: 1em; height: 1em; }
+.item-tag.need svg:not(.icon) { width: 1.2em; height: 1.2em; }
+.item-new { position: absolute; top: -1vmin; right: -1vmin; padding: .1em .5em; border-radius: 999px; background: var(--coral); color: #fff; border: 3px solid var(--ink); font-weight: 900; font-size: clamp(11px, 1.8vmin, 16px); rotate: 8deg; animation: pulse 1.2s ease-in-out infinite; }
+.thumb-svg { overflow: hidden; }
+.werft-ship .thumb-svg { border-radius: 4vmin; }
+.werft-ship.wiggle .pet { transform-box: fill-box; transform-origin: 50% 100%; animation: wobble .5s 2; }
+.werft-ship.wiggle .ship-svg { animation: hop .4s ease; }
+
+/* ---------- Schatzkarte: Schätze ---------- */
+.screen-map.night { background: radial-gradient(ellipse at 50% 38%, #2f5d8a, #1b3a63 62%, #10223f); }
+.screen-map.night .map-sea { opacity: .25; }
+.screen-map.night .island-svg { filter: brightness(.82) saturate(.9); }
+.screen-map.night .ribbon, .screen-map.night .isl-stars { position: relative; }
+.screen-map.night .beam { opacity: .9; }
+.map-night { position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background-image: radial-gradient(#fff 1.5px, transparent 2px), radial-gradient(#fff 1px, transparent 1.5px);
+  background-size: 23vmin 19vmin, 13vmin 11vmin; background-position: 4vmin 3vmin, 9vmin 8vmin; animation: starTwinkle 4s ease-in-out infinite alternate; }
+.map-night .moon { position: absolute; left: 33%; top: 3vmin; width: 9vmin; height: 9vmin; border-radius: 50%; box-shadow: 2vmin 1vmin 0 0 #ffe9a8; }
+.map-rainbow { position: absolute; left: 50%; top: 6vmin; width: 60vw; translate: -50% 0; z-index: 1; opacity: .6; pointer-events: none; }
+.map-rainbow svg { width: 100%; }
+.map-fireworks { position: absolute; inset: 0 0 50% 0; z-index: 1; pointer-events: none; }
+.map-fireworks span { position: absolute; width: 14vmin; top: calc(4vmin + var(--i) * 3vmin); left: calc(14% + var(--i) * 22%); opacity: 0; animation: firework 4s ease-out infinite; animation-delay: calc(var(--i) * 1s); }
+.map-snow { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+.map-snow i { position: absolute; top: -3vmin; left: calc(var(--x) * 1%); width: calc(var(--s) * 1.4vmin); height: calc(var(--s) * 1.4vmin); border-radius: 50%; background: #fff; opacity: .9; animation: snow 9s linear infinite; animation-delay: calc(var(--d) * -.9s); }
+.map-whale { position: absolute; left: 79%; bottom: 24vmin; width: 15vmin; z-index: 2; pointer-events: none; animation: whale 12s ease-in-out infinite; }
+.map-whale .spout { opacity: 0; transform-box: fill-box; transform-origin: 50% 100%; animation: spout 12s ease-out infinite; }
+.map-whale svg, .map-dolphin svg { width: 100%; overflow: visible; }
+.map-dolphin { position: absolute; left: 79%; bottom: 5vmin; width: 9vmin; z-index: 3; pointer-events: none; animation: dolphin 7s ease-in-out infinite; }
+
 /* ---------- Ergebnis ---------- */
 .result { display: flex; flex-direction: column; align-items: center; gap: 1.4vmin; padding: 2.6vmin 7vmin 3.4vmin; animation: pop .45s both; }
 .result-chest { width: 25vmin; margin-top: 3vmin; }
@@ -766,6 +802,12 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
 @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
 @keyframes crab { from { translate: -60px 0; } to { translate: 60px 0; } }
 @keyframes glow { from { transform: scale(.92); } to { transform: scale(1.06); } }
+@keyframes starTwinkle { from { opacity: .55; } to { opacity: 1; } }
+@keyframes firework { 0% { opacity: 0; transform: scale(.1); } 8% { opacity: 1; } 35% { opacity: 1; transform: scale(1); } 50%, 100% { opacity: 0; transform: scale(1.15); } }
+@keyframes snow { from { transform: translate(0, 0); } to { transform: translate(4vmin, 110vh); } }
+@keyframes whale { 0%, 55%, 100% { transform: translateY(5vmin); opacity: 0; } 62%, 88% { transform: translateY(0); opacity: 1; } }
+@keyframes spout { 0%, 66% { opacity: 0; transform: scale(.3); } 72% { opacity: 1; transform: scale(1); } 84%, 100% { opacity: 0; transform: scale(1.2); } }
+@keyframes dolphin { 0%, 60%, 100% { transform: translate(0, 4vmin) rotate(20deg); opacity: 0; } 64% { opacity: 1; } 72% { transform: translate(-6vmin, -7vmin) rotate(-25deg); } 82% { transform: translate(-12vmin, 0) rotate(-60deg); opacity: 1; } 86% { opacity: 0; } }
 @keyframes wobble { 25% { transform: rotate(-9deg); } 50% { transform: rotate(7deg); } 75% { transform: rotate(-4deg); } }
 @keyframes chestBob { 50% { transform: translateY(-7px); } }
 @keyframes ghostPulse { 50% { opacity: .45; } }

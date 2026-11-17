@@ -137,6 +137,7 @@ export function awardStation(id, stars, medal = false) {
   // Eine Station, die schon drei Sterne hat, bringt beim Wiederholen höchstens noch eine Münze.
   const coins = (state.stars[id] || 0) >= 3 ? Math.min(stars, 1) : stars;
   state.coins += coins;
+  celebrate = true;
   if (medal) { state.medals = state.medals || {}; state.medals[id] = true; }
   state.played[id] = (state.played[id] || 0) + 1;
   state.last = state.last || {};
@@ -144,6 +145,22 @@ export function awardStation(id, stars, medal = false) {
   if (stars > (state.stars[id] || 0)) state.stars[id] = stars;
   save();
   return coins;
+}
+
+/** Kleine Merker, z. B. setFlag('schatzGesehen', 'goldschiff'). */
+export const hasFlag = (group, id) => !!(state[group] && state[group][id]);
+export function setFlag(group, id) {
+  if (hasFlag(group, id)) return;
+  state[group] = { ...(state[group] || {}), [id]: true };
+  save();
+}
+
+// Nach einer Runde mit Münzen feuert die Konfettikanone auf der Schatzkarte (einmal).
+let celebrate = false;
+export function takeCelebration() {
+  const c = celebrate;
+  celebrate = false;
+  return c;
 }
 
 /** Bilder und Rätsel vom Kartentisch: höchstens 12 je Art, das älteste fällt heraus. */

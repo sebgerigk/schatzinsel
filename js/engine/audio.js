@@ -167,9 +167,20 @@ const SFX = {
   bump: () => { tone(140, 0, 0.22, 'square', 0.08, 90); tone(110, 0.04, 0.2, 'sine', 0.2); },
   swirl: () => { tone(500, 0, 0.18, 'sine', 0.12, 900); },
   scale: () => { tone(440, 0, 0.1, 'triangle', 0.14); tone(370, 0.12, 0.22, 'triangle', 0.14); },
+  // Werft-Schätze: Schiffsglocke, Nebelhorn, Seemannslied, Katze, Äffchen
+  bell: () => { [0, 0.55].forEach(t => { tone(880, t, 1.1, 'sine', 0.2); tone(2215, t, 0.5, 'sine', 0.06); }); },
+  horn: () => { tone(110, 0, 1.3, 'sawtooth', 0.07); tone(165, 0, 1.3, 'sine', 0.12); },
+  shanty: () => {
+    // eine eigene kleine Seemannsweise
+    [[392, 0], [392, 0.22], [440, 0.44], [392, 0.66], [330, 0.88], [294, 1.1], [330, 1.32], [392, 1.54], [523, 1.86]]
+      .forEach(([f, t], i, a) => tone(f, t, i === a.length - 1 ? 0.5 : 0.2, 'triangle', 0.16));
+  },
+  miau: () => { tone(620, 0, 0.18, 'triangle', 0.14, 900); tone(900, 0.18, 0.3, 'triangle', 0.14, 520); },
+  affe: () => { [0, 0.16, 0.32].forEach(t => tone(700, t, 0.12, 'square', 0.06, 1100)); },
+  boom: () => { tone(90, 0, 0.35, 'sawtooth', 0.12, 40); tone(1200, 0.05, 0.25, 'triangle', 0.06, 2400); },
 };
 
-const SFX_LEN = { tap: 0.08, pop: 0.14, correct: 0.42, wrong: 0.2, coin: 0.42, star: 0.48, fanfare: 1.15, sail: 0.6, step: 0.13, bump: 0.25, swirl: 0.2, scale: 0.35 };
+const SFX_LEN = { tap: 0.08, pop: 0.14, correct: 0.42, wrong: 0.2, coin: 0.42, star: 0.48, fanfare: 1.15, sail: 0.6, step: 0.13, bump: 0.25, swirl: 0.2, scale: 0.35, bell: 1.7, horn: 1.3, shanty: 2.4, miau: 0.5, affe: 0.45, boom: 0.4 };
 
 export function sfx(name) {
   if (!ctx || ctx.state !== 'running' || !SFX[name]) return;
