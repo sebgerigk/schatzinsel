@@ -6,6 +6,7 @@ import { P } from '../engine/content.js';
 import { sfx } from '../engine/audio.js';
 import { shuffle, shake, wait, pick, burst, rnd } from '../engine/util.js';
 import { ICON } from '../art/icons.js';
+import { leastSeenFirst, markSeen } from '../engine/storage.js';
 import { THINGS, sackSvg, scaleSvg, featherSvg, anchorSvg } from '../art/denkbilder.js';
 import { SEQUENCES } from '../art/bildfolgen.js';
 
@@ -17,9 +18,10 @@ export const denken = {
 
   makeTasks({ kind, n = 6 }) {
     if (kind === 'ablauf') {
-      // Erst vier Folgen mit drei Bildern, zum Schluss zwei mit vier Bildern.
-      const three = shuffle(SEQUENCES.filter(s => s.frames.length === 3)).slice(0, n - 2);
-      const four = shuffle(SEQUENCES.filter(s => s.frames.length === 4)).slice(0, 2);
+      // Erst vier Folgen mit drei Bildern, zum Schluss zwei mit vier Bildern – jeweils die am seltensten gespielten.
+      const least = list => leastSeenFirst(list, s => 'b:' + s.id);
+      const three = least(SEQUENCES.filter(s => s.frames.length === 3)).slice(0, n - 2);
+      const four = least(SEQUENCES.filter(s => s.frames.length === 4)).slice(0, 2);
       return [...three, ...four].map(seq => ({ kind, seq }));
     }
     if (kind === 'muster') {
@@ -71,6 +73,7 @@ function mountAblauf(root, t, api) {
       locked = true;
       // Der Ablauf „spielt" einmal von vorn nach hinten.
       for (const s of slots) { s.classList.add('play'); sfx('tap'); await wait(380); s.classList.remove('play'); }
+      markSeen('b:' + t.seq.id);
       await api.correct({ target: root.querySelector('.seq-frames') });
       api.done(mistakes === 0);
     } else {
