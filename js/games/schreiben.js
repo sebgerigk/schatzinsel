@@ -2,7 +2,7 @@
 // (Das Nachspuren einzelner Buchstaben gibt es weiterhin als Aufgabenart 'trace', es liegt aber nicht mehr auf dem Weg.)
 import { shuffle, pick, shake } from '../engine/util.js';
 import { content, P, NUMWORDS } from '../engine/content.js';
-import { sfx, speak } from '../engine/audio.js';
+import { sfx, speak, stressed } from '../engine/audio.js';
 import { ICON } from '../art/icons.js';
 import { mountBuild } from './build.js';
 import { picture } from '../art/pictures.js';
@@ -236,6 +236,8 @@ function mountTiles(root, t, api, withPicture) {
   mountBuild(root, {
     parts: [...word], extras, pic: withPicture ? picture(t.w.pic) : null, say: word,
     onSolved: () => markSeen((withPicture ? 'w:' : 'h:') + word),
+    // Falscher Buchstabe: Koko spricht das Wort noch einmal und dehnt den Laut an dieser Stelle.
+    stress: i => stressed(word, i),
   }, api);
 }
 
@@ -268,7 +270,11 @@ function mountGap(root, t, api) {
       tries++;
       btn.disabled = true;
       btn.classList.add('no');
-      api.wrong({ target: btn });
+      // Koko spricht das Wort mit Betonung auf der Lücke. Steht dort nur ein Mitlaut (Hose),
+      // wird der lange Selbstlaut davor gedehnt – genau den soll das Kind hören.
+      const at = g.len === 1 && g.start > 0 ? g.start - 1 : g.start;
+      api.wrong({ target: btn, silent: true });
+      api.koko.talk(stressed(word, at));
     }
   });
 }
@@ -347,6 +353,7 @@ function mountType(root, t, api, withPicture) {
       missHere++;
       sfx('wrong');
       shake(key);
+      api.koko.talk(stressed(word, pos));
       if (missHere >= 2) keys.find(k => k.dataset.c === letters[pos].toLowerCase()).classList.add('hint');
     }
   });

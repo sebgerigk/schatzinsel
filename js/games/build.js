@@ -11,8 +11,9 @@ import { ICON } from '../art/icons.js';
  * @param say     Text, den Koko vorspricht (Wort oder Satz)
  * @param wide    breite Plättchen für Silben und Wörter
  * @param onSolved wird beim fertigen Bauen aufgerufen
+ * @param stress  (Platz) -> Text: was Koko nach einem falschen Plättchen an diesem Platz sagt
  */
-export function mountBuild(root, { parts, extras = [], pic = null, say, wide = false, onSolved }, api) {
+export function mountBuild(root, { parts, extras = [], pic = null, say, wide = false, onSolved, stress = null }, api) {
   let tiles = [...parts.map(c => ({ c })), ...extras.map(c => ({ c }))];
   for (let k = 0; k < 8; k++) {
     tiles = shuffle(tiles);
@@ -63,6 +64,7 @@ export function mountBuild(root, { parts, extras = [], pic = null, say, wide = f
       missHere++;
       sfx('wrong');
       shake(el);
+      if (stress) api.koko.talk(stress(pos));
       if (missHere >= 2) {
         // Nach zwei Fehlversuchen zeigt Koko das richtige Plättchen.
         const right = tileEls.find(n => !n.classList.contains('used') && tiles[Number(n.dataset.i)].c === parts[pos]);

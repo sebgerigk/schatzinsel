@@ -52,11 +52,11 @@ register('round', (el, { island, idx }) => {
         if (target) burst(target);
         await Promise.all([withTimeout(koko.say(say || pick(P('praise'))), 5000), wait(900)]);
       },
-      /** Falsche Antwort: sanfter Hinweis, kein Punktabzug-Drama. */
-      wrong({ target, say } = {}) {
+      /** Falsche Antwort: sanfter Hinweis, kein Punktabzug-Drama. silent: das Spiel spricht selbst. */
+      wrong({ target, say, silent = false } = {}) {
         sfx('wrong');
         shake(target);
-        koko.say(say || pick(P('retry')));
+        if (!silent) koko.say(say || pick(P('retry')));
       },
       done(ok) {
         if (!alive) return;

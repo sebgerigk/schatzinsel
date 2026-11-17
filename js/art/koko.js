@@ -85,6 +85,11 @@ export function createKoko() {
 
   async function say(text) {
     show(text);
+    await talk(text);
+  }
+
+  /** Spricht, ohne die Sprechblase zu ändern – z. B. ein Wort, das das Kind gerade schreibt. */
+  async function talk(text) {
     const id = ++talkId;
     el.classList.add('talking');
     await speak(text);
@@ -102,5 +107,5 @@ export function createKoko() {
     if (last) say(last);
   });
 
-  return { el, say, show, cheer };
+  return { el, say, talk, show, cheer };
 }

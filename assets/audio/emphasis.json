@@ -1,0 +1,647 @@
+{
+ "Sonne": [
+  "Sonne",
+  "Soooooooonne",
+  "Son-ne",
+  "Son-ne",
+  "Sonneeeeeeee"
+ ],
+ "Mond": [
+  "Mmmmmmmmond",
+  "Moooooooond",
+  "Monnnnnnnnd",
+  "Mond"
+ ],
+ "Stern": [
+  "Stern",
+  "Stern",
+  "Steeeeeeeern",
+  "Stern",
+  "Sternnnnnnnn"
+ ],
+ "Haus": [
+  "Haus",
+  "Hauuuuuuuus",
+  "Hauuuuuuuus",
+  "Haus"
+ ],
+ "Baum": [
+  "Baum",
+  "Bauuuuuuuum",
+  "Bauuuuuuuum",
+  "Baummmmmmmm"
+ ],
+ "Ball": [
+  "Ball",
+  "Baaaaaaaall",
+  "Ballllllll",
+  "Ballllllll"
+ ],
+ "Fisch": [
+  "Ffffffffisch",
+  "Fiiiiiiiisch",
+  "Fischschsch",
+  "Fischschsch",
+  "Fischschsch"
+ ],
+ "Hut": [
+  "Hut",
+  "Huuuuuuuut",
+  "Hut"
+ ],
+ "Boot": [
+  "Boot",
+  "Booooooooot",
+  "Booooooooot",
+  "Boot"
+ ],
+ "Blume": [
+  "Blume",
+  "Bllllllllume",
+  "Bluuuuuuuume",
+  "Blummmmmmmme",
+  "Blumeeeeeeee"
+ ],
+ "Apfel": [
+  "Aaaaaaaapfel",
+  "Ap-fel",
+  "Apffffffffel",
+  "Apfeeeeeeeel",
+  "Apfellllllll"
+ ],
+ "Wolke": [
+  "Wolke",
+  "Woooooooolke",
+  "Wollllllllke",
+  "Wol-ke",
+  "Wolkeeeeeeee"
+ ],
+ "Pilz": [
+  "Pilz",
+  "Piiiiiiiilz",
+  "Pillllllllz",
+  "Pilz"
+ ],
+ "Eis": [
+  "Eiiiiiiiis",
+  "Eiiiiiiiis",
+  "Eis"
+ ],
+ "Uhr": [
+  "Uuuuuuuuhr",
+  "Uuuuuuuuhr",
+  "Uhr"
+ ],
+ "Buch": [
+  "Buch",
+  "Buuuuuuuuch",
+  "Buchchchch",
+  "Buchchchch"
+ ],
+ "Anker": [
+  "Aaaaaaaanker",
+  "Annnnnnnnker",
+  "An-ker",
+  "Ankeeeeeeeer",
+  "Anker"
+ ],
+ "Krone": [
+  "Krone",
+  "Krone",
+  "Kroooooooone",
+  "Kronnnnnnnne",
+  "Kroneeeeeeee"
+ ],
+ "Kiste": [
+  "Kiste",
+  "Kiiiiiiiiste",
+  "Kis-te",
+  "Kis-te",
+  "Kisteeeeeeee"
+ ],
+ "Palme": [
+  "Palme",
+  "Paaaaaaaalme",
+  "Pallllllllme",
+  "Palmmmmmmmme",
+  "Palmeeeeeeee"
+ ],
+ "Insel": [
+  "Iiiiiiiinsel",
+  "Innnnnnnnsel",
+  "In-sel",
+  "Inseeeeeeeel",
+  "Insellllllll"
+ ],
+ "Fahne": [
+  "Ffffffffahne",
+  "Faaaaaaaahne",
+  "Faaaaaaaahne",
+  "Fahnnnnnnnne",
+  "Fahneeeeeeee"
+ ],
+ "Herz": [
+  "Herz",
+  "Heeeeeeeerz",
+  "Herz",
+  "Herz"
+ ],
+ "Katze": [
+  "Katze",
+  "Kaaaaaaaatze",
+  "Kat-ze",
+  "Kat-ze",
+  "Katzeeeeeeee"
+ ],
+ "Hund": [
+  "Hund",
+  "Huuuuuuuund",
+  "Hunnnnnnnnd",
+  "Hund"
+ ],
+ "Maus": [
+  "Mmmmmmmmaus",
+  "Mauuuuuuuus",
+  "Mauuuuuuuus",
+  "Maus"
+ ],
+ "Ente": [
+  "Eeeeeeeente",
+  "Ennnnnnnnte",
+  "En-te",
+  "Enteeeeeeee"
+ ],
+ "Kerze": [
+  "Kerze",
+  "Keeeeeeeerze",
+  "Ker-ze",
+  "Ker-ze",
+  "Kerzeeeeeeee"
+ ],
+ "Banane": [
+  "Banane",
+  "Baaaaaaaanane",
+  "Bannnnnnnnane",
+  "Banaaaaaaaane",
+  "Banannnnnnnne",
+  "Bananeeeeeeee"
+ ],
+ "Schiff": [
+  "Schschschiff",
+  "Schschschiff",
+  "Schschschiff",
+  "Schiiiiiiiiff",
+  "Schiffffffff",
+  "Schiffffffff"
+ ],
+ "Tisch": [
+  "Tisch",
+  "Tiiiiiiiisch",
+  "Tischschsch",
+  "Tischschsch",
+  "Tischschsch"
+ ],
+ "Käse": [
+  "Käse",
+  "Kääääääääse",
+  "Kä-se",
+  "Käseeeeeeee"
+ ],
+ "Brot": [
+  "Brot",
+  "Brot",
+  "Broooooooot",
+  "Brot"
+ ],
+ "Lampe": [
+  "Llllllllampe",
+  "Laaaaaaaampe",
+  "Lammmmmmmmpe",
+  "Lam-pe",
+  "Lampeeeeeeee"
+ ],
+ "Auto": [
+  "Auuuuuuuuto",
+  "Auuuuuuuuto",
+  "Au-to",
+  "Autoooooooo"
+ ],
+ "Tür": [
+  "Tür",
+  "Tüüüüüüüür",
+  "Tür"
+ ],
+ "Ei": [
+  "Eiiiiiiii",
+  "Eiiiiiiii"
+ ],
+ "Rakete": [
+  "Rakete",
+  "Raaaaaaaakete",
+  "Ra-kete",
+  "Rakeeeeeeeete",
+  "Rake-te",
+  "Raketeeeeeeee"
+ ],
+ "Schlüssel": [
+  "Schschschlüssel",
+  "Schschschlüssel",
+  "Schschschlüssel",
+  "Schllllllllüssel",
+  "Schlüüüüüüüüssel",
+  "Schlüs-sel",
+  "Schlüs-sel",
+  "Schlüsseeeeeeeel",
+  "Schlüssellllllll"
+ ],
+ "Schuh": [
+  "Schschschuh",
+  "Schschschuh",
+  "Schschschuh",
+  "Schuuuuuuuuh",
+  "Schuuuuuuuuh"
+ ],
+ "Schaf": [
+  "Schschschaf",
+  "Schschschaf",
+  "Schschschaf",
+  "Schaaaaaaaaf",
+  "Schaffffffff"
+ ],
+ "Schere": [
+  "Schschschere",
+  "Schschschere",
+  "Schschschere",
+  "Scheeeeeeeere",
+  "Sche-re",
+  "Schereeeeeeee"
+ ],
+ "Schal": [
+  "Schschschal",
+  "Schschschal",
+  "Schschschal",
+  "Schaaaaaaaal",
+  "Schallllllll"
+ ],
+ "Schnecke": [
+  "Schschschnecke",
+  "Schschschnecke",
+  "Schschschnecke",
+  "Schnnnnnnnnecke",
+  "Schneeeeeeeecke",
+  "Schne-cke",
+  "Schne-cke",
+  "Schneckeeeeeeee"
+ ],
+ "Schwein": [
+  "Schschschwein",
+  "Schschschwein",
+  "Schschschwein",
+  "Schwein",
+  "Schweiiiiiiiin",
+  "Schweiiiiiiiin",
+  "Schweinnnnnnnn"
+ ],
+ "Schirm": [
+  "Schschschirm",
+  "Schschschirm",
+  "Schschschirm",
+  "Schiiiiiiiirm",
+  "Schirm",
+  "Schirmmmmmmmm"
+ ],
+ "Tasche": [
+  "Tasche",
+  "Taaaaaaaasche",
+  "Taschschsche",
+  "Taschschsche",
+  "Taschschsche",
+  "Tascheeeeeeee"
+ ],
+ "Flasche": [
+  "Fffffffflasche",
+  "Fllllllllasche",
+  "Flaaaaaaaasche",
+  "Flaschschsche",
+  "Flaschschsche",
+  "Flaschschsche",
+  "Flascheeeeeeee"
+ ],
+ "Leiter": [
+  "Lllllllleiter",
+  "Leiiiiiiiiter",
+  "Leiiiiiiiiter",
+  "Lei-ter",
+  "Leiteeeeeeeer",
+  "Leiter"
+ ],
+ "Stein": [
+  "Stein",
+  "Stein",
+  "Steiiiiiiiin",
+  "Steiiiiiiiin",
+  "Steinnnnnnnn"
+ ],
+ "Kleid": [
+  "Kleid",
+  "Klllllllleid",
+  "Kleiiiiiiiid",
+  "Kleiiiiiiiid",
+  "Kleid"
+ ],
+ "Eimer": [
+  "Eiiiiiiiimer",
+  "Eiiiiiiiimer",
+  "Eimmmmmmmmer",
+  "Eimeeeeeeeer",
+  "Eimer"
+ ],
+ "Biene": [
+  "Biene",
+  "Biiiiiiiiene",
+  "Biiiiiiiiene",
+  "Biennnnnnnne",
+  "Bieneeeeeeee"
+ ],
+ "Ziege": [
+  "Ziege",
+  "Ziiiiiiiiege",
+  "Ziiiiiiiiege",
+  "Zie-ge",
+  "Ziegeeeeeeee"
+ ],
+ "Fliege": [
+  "Ffffffffliege",
+  "Flllllllliege",
+  "Fliiiiiiiiege",
+  "Fliiiiiiiiege",
+  "Flie-ge",
+  "Fliegeeeeeeee"
+ ],
+ "Brief": [
+  "Brief",
+  "Brief",
+  "Briiiiiiiief",
+  "Briiiiiiiief",
+  "Brieffffffff"
+ ],
+ "Stiefel": [
+  "Stiefel",
+  "Stiefel",
+  "Stiiiiiiiiefel",
+  "Stiiiiiiiiefel",
+  "Stieffffffffel",
+  "Stiefeeeeeeeel",
+  "Stiefellllllll"
+ ],
+ "Zwiebel": [
+  "Zwiebel",
+  "Zwiebel",
+  "Zwiiiiiiiiebel",
+  "Zwiiiiiiiiebel",
+  "Zwie-bel",
+  "Zwiebeeeeeeeel",
+  "Zwiebellllllll"
+ ],
+ "Auge": [
+  "Auuuuuuuuge",
+  "Auuuuuuuuge",
+  "Au-ge",
+  "Augeeeeeeee"
+ ],
+ "Zaun": [
+  "Zaun",
+  "Zauuuuuuuun",
+  "Zauuuuuuuun",
+  "Zaunnnnnnnn"
+ ],
+ "Raupe": [
+  "Raupe",
+  "Rauuuuuuuupe",
+  "Rauuuuuuuupe",
+  "Rau-pe",
+  "Raupeeeeeeee"
+ ],
+ "Eule": [
+  "Euuuuuuuule",
+  "Euuuuuuuule",
+  "Eulllllllle",
+  "Euleeeeeeee"
+ ],
+ "Feuer": [
+  "Ffffffffeuer",
+  "Feuuuuuuuuer",
+  "Feuuuuuuuuer",
+  "Feueeeeeeeer",
+  "Feuer"
+ ],
+ "Kreuz": [
+  "Kreuz",
+  "Kreuz",
+  "Kreuuuuuuuuz",
+  "Kreuuuuuuuuz",
+  "Kreuz"
+ ],
+ "Stuhl": [
+  "Stuhl",
+  "Stuhl",
+  "Stuuuuuuuuhl",
+  "Stuuuuuuuuhl",
+  "Stuhllllllll"
+ ],
+ "Stift": [
+  "Stift",
+  "Stift",
+  "Stiiiiiiiift",
+  "Stifffffffft",
+  "Stift"
+ ],
+ "Spinne": [
+  "Spinne",
+  "Spinne",
+  "Spiiiiiiiinne",
+  "Spin-ne",
+  "Spin-ne",
+  "Spinneeeeeeee"
+ ],
+ "Dach": [
+  "Dach",
+  "Daaaaaaaach",
+  "Dachchchch",
+  "Dachchchch"
+ ],
+ "Kuchen": [
+  "Kuchen",
+  "Kuuuuuuuuchen",
+  "Kuchchchchen",
+  "Kuchchchchen",
+  "Kucheeeeeeeen",
+  "Kuchennnnnnnn"
+ ],
+ "Milch": [
+  "Mmmmmmmmilch",
+  "Miiiiiiiilch",
+  "Millllllllch",
+  "Milchchchch",
+  "Milchchchch"
+ ],
+ "Becher": [
+  "Becher",
+  "Beeeeeeeecher",
+  "Bechchchcher",
+  "Bechchchcher",
+  "Becheeeeeeeer",
+  "Becher"
+ ],
+ "Puppe": [
+  "Puppe",
+  "Puuuuuuuuppe",
+  "Pup-pe",
+  "Pup-pe",
+  "Puppeeeeeeee"
+ ],
+ "Tasse": [
+  "Tasse",
+  "Taaaaaaaasse",
+  "Tas-se",
+  "Tas-se",
+  "Tasseeeeeeee"
+ ],
+ "Kanne": [
+  "Kanne",
+  "Kaaaaaaaanne",
+  "Kan-ne",
+  "Kan-ne",
+  "Kanneeeeeeee"
+ ],
+ "Löffel": [
+  "Llllllllöffel",
+  "Lööööööööffel",
+  "Löf-fel",
+  "Löf-fel",
+  "Löffeeeeeeeel",
+  "Löffellllllll"
+ ],
+ "Koffer": [
+  "Koffer",
+  "Kooooooooffer",
+  "Kof-fer",
+  "Kof-fer",
+  "Koffeeeeeeeer",
+  "Koffer"
+ ],
+ "Hammer": [
+  "Hammer",
+  "Haaaaaaaammer",
+  "Ham-mer",
+  "Ham-mer",
+  "Hammeeeeeeeer",
+  "Hammer"
+ ],
+ "Brille": [
+  "Brille",
+  "Brille",
+  "Briiiiiiiille",
+  "Bril-le",
+  "Bril-le",
+  "Brilleeeeeeee"
+ ],
+ "Bett": [
+  "Bett",
+  "Beeeeeeeett",
+  "Bett",
+  "Bett"
+ ],
+ "Hose": [
+  "Hose",
+  "Hoooooooose",
+  "Ho-se",
+  "Hoseeeeeeee"
+ ],
+ "Dose": [
+  "Dose",
+  "Doooooooose",
+  "Do-se",
+  "Doseeeeeeee"
+ ],
+ "Rose": [
+  "Rose",
+  "Roooooooose",
+  "Ro-se",
+  "Roseeeeeeee"
+ ],
+ "Hase": [
+  "Hase",
+  "Haaaaaaaase",
+  "Ha-se",
+  "Haseeeeeeee"
+ ],
+ "Nase": [
+  "Nnnnnnnnase",
+  "Naaaaaaaase",
+  "Na-se",
+  "Naseeeeeeee"
+ ],
+ "Vase": [
+  "Vase",
+  "Vaaaaaaaase",
+  "Va-se",
+  "Vaseeeeeeee"
+ ],
+ "Hand": [
+  "Hand",
+  "Haaaaaaaand",
+  "Hannnnnnnnd",
+  "Hand"
+ ],
+ "Topf": [
+  "Topf",
+  "Toooooooopf",
+  "Topf",
+  "Topffffffff"
+ ],
+ "Tonne": [
+  "Tonne",
+  "Toooooooonne",
+  "Ton-ne",
+  "Ton-ne",
+  "Tonneeeeeeee"
+ ],
+ "Tanne": [
+  "Tanne",
+  "Taaaaaaaanne",
+  "Tan-ne",
+  "Tan-ne",
+  "Tanneeeeeeee"
+ ],
+ "Kuh": [
+  "Kuh",
+  "Kuuuuuuuuh",
+  "Kuuuuuuuuh"
+ ],
+ "Mund": [
+  "Mmmmmmmmund",
+  "Muuuuuuuund",
+  "Munnnnnnnnd",
+  "Mund"
+ ],
+ "Bär": [
+  "Bär",
+  "Bäääääääär",
+  "Bär"
+ ],
+ "Frosch": [
+  "Ffffffffrosch",
+  "Frosch",
+  "Froooooooosch",
+  "Froschschsch",
+  "Froschschsch",
+  "Froschschsch"
+ ],
+ "Igel": [
+  "Iiiiiiiigel",
+  "I-gel",
+  "Igeeeeeeeel",
+  "Igellllllll"
+ ]
+}

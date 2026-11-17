@@ -4,17 +4,15 @@ let master = null;
 let voiceGain = null;
 let busyUntil = 0; // bis wann (Audio-Zeit) noch ein Soundeffekt klingt
 let index = {};
+let emphasis = {};   // Wort -> je Buchstabe die betonte Fassung (erzeugt von tools/gen-audio.py)
 const buffers = new Map();
 let currentSrc = null;
 let resolveCurrent = null;
 let speakToken = 0;
 
 export async function initAudio() {
-  try {
-    index = await (await fetch('assets/audio/index.json')).json();
-  } catch {
-    index = {};
-  }
+  const get = name => fetch('assets/audio/' + name).then(r => r.json()).catch(() => ({}));
+  [index, emphasis] = await Promise.all([get('index.json'), get('emphasis.json')]);
   // iOS pausiert den Ton, wenn die App im Hintergrund war – bei jeder Berührung wieder aufwecken.
   document.addEventListener('pointerdown', unlockAudio, true);
 }
@@ -116,6 +114,16 @@ export async function speak(text) {
     if (token !== speakToken) return;
   }
   await tts(text);
+}
+
+/**
+ * Das Wort so, wie Koko es nach einem Fehler an Buchstabe i spricht: der Laut dort wird
+ * gedehnt (Schneeeeecke) oder durch eine kleine Pause hervorgehoben (Kis-te).
+ * Ohne passende Fassung ist es einfach das Wort.
+ */
+export function stressed(word, i) {
+  const list = emphasis[word];
+  return (list && list[i]) || word;
 }
 
 /** Lädt Clips schon einmal vor, damit sie ohne Verzögerung starten. */

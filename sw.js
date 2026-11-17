@@ -1,7 +1,7 @@
 // Service Worker: macht die Schatzinsel offline nutzbar.
 // Strategie: alles aus dem Cache beantworten und im Hintergrund auffrischen –
 // so startet die App sofort und holt sich Updates beim nächsten Öffnen mit Netz.
-const CACHE = 'schatzinsel-v5';
+const CACHE = 'schatzinsel-v6';
 
 const CORE = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',
@@ -12,7 +12,7 @@ const CORE = [
   'js/games/rechnen.js', 'js/games/lesen.js', 'js/games/schreiben.js', 'js/games/build.js',
   'js/screens/title.js', 'js/screens/map.js', 'js/screens/island.js', 'js/screens/round.js', 'js/screens/gallery.js', 'js/screens/werft.js', 'js/screens/eltern.js', 'js/screens/pause.js', 'js/screens/gate.js',
   'content/words.json', 'content/sentences.json', 'content/phrases.json', 'content/stories.json', 'content/extras.json',
-  'assets/audio/index.json',
+  'assets/audio/index.json', 'assets/audio/emphasis.json',
   'assets/icons/icon-180.png', 'assets/icons/icon-192.png', 'assets/icons/icon-512.png',
 ];
 
