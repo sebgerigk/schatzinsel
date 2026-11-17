@@ -39,7 +39,7 @@ export function startPlaytime() {
 
 /** Der Router meldet, welcher Bildschirm gerade gezeigt wird. */
 export function setScreen(name) {
-  const play = ['map', 'island', 'round', 'werft'].includes(name);
+  const play = ['map', 'island', 'round', 'werft', 'kartentisch'].includes(name);
   if (play && !counting) lastTick = Date.now();
   counting = play;
 }

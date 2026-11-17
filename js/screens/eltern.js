@@ -1,8 +1,8 @@
 // Elternbereich: Fortschritt, Spielzeit, Inhalte und Sicherung des Spielstands.
 // Bewusst schlicht und in normaler Schrift – dieser Bildschirm ist für Erwachsene.
 import { register, go } from '../engine/router.js';
-import { getState, settings, setSetting, applySettings, exportState, importState, resetProgress, storageInfo } from '../engine/storage.js';
-import { ISLANDS, ISLAND_ORDER } from '../content/stations.js';
+import { getState, settings, setSetting, applySettings, exportState, importState, resetProgress, storageInfo, werkstatt } from '../engine/storage.js';
+import { ISLANDS, ISLAND_ORDER, part2Visible } from '../content/stations.js';
 import { content } from '../engine/content.js';
 import { minutesToday, lastDays, addBonus, timeIsUp } from '../engine/playtime.js';
 import { ICON } from '../art/icons.js';
@@ -22,14 +22,15 @@ function progressHtml() {
   let total = 0, got = 0, done = 0, count = 0;
   const tables = ISLAND_ORDER.map(id => {
     const isl = ISLANDS[id];
+    const medals = id === 'programmieren';
     const rows = isl.stations.map(s => {
       const stars = st.stars[s.id] || 0;
       total += 3; got += stars; count++;
       if (stars) done++;
-      return `<tr><td>${s.title}</td><td class="stars">${'★'.repeat(stars)}<span>${'★'.repeat(3 - stars)}</span></td>
-        <td>${st.played[s.id] || 0}×</td><td>${fmtDate((st.last || {})[s.id])}</td></tr>`;
+      return `<tr><td>${s.title}${s.part === 2 ? ' <small>(Teil 2)</small>' : ''}</td><td class="stars">${'★'.repeat(stars)}<span>${'★'.repeat(3 - stars)}</span></td>
+        ${medals ? `<td>${(st.medals || {})[s.id] ? 'Kompass' : '–'}</td>` : ''}<td>${st.played[s.id] || 0}×</td><td>${fmtDate((st.last || {})[s.id])}</td></tr>`;
     }).join('');
-    return `<h3>${isl.name}</h3><table><thead><tr><th>Station</th><th>Sterne</th><th>Gespielt</th><th>Zuletzt</th></tr></thead><tbody>${rows}</tbody></table>`;
+    return `<h3>${isl.name}</h3><table><thead><tr><th>Station</th><th>Sterne</th>${medals ? '<th>Medaille</th>' : ''}<th>Gespielt</th><th>Zuletzt</th></tr></thead><tbody>${rows}</tbody></table>`;
   }).join('');
   const days = lastDays(7);
   const max = Math.max(10, ...days.map(d => d.min));
@@ -44,7 +45,9 @@ function progressHtml() {
     <div class="bars">${days.map(d => `<div class="bar"><i style="height:${Math.round(d.min / max * 100)}%"></i><b>${d.min}</b><span>${d.label}</span></div>`).join('')}</div>
     <h3>Geübt</h3>
     <p>Wörter gelesen: ${countSeen('l:')} von ${content.words.length} · Wörter geschrieben: ${countSeen('w:') + countSeen('t:') + countSeen('d:') + countSeen('h:')}
-      · Geschichten gelesen: ${countSeen('g:')} von ${content.stories.length}</p>
+      · Geschichten gelesen: ${countSeen('g:')} von ${content.stories.length}
+      · Seekarten gelöst: ${countSeen('p:')} · am Kartentisch: ${werkstatt().raetsel.length} Rätsel gebaut, ${werkstatt().bilder.length} Bilder gemalt</p>
+    <p class="hint">Die Kompass-Medaille gibt es auf der Programmierinsel, wenn alle Aufgaben einer Runde mit der kürzesten möglichen Lösung geschafft wurden.</p>
     <p class="hint">Ein Stern heißt geschafft, drei Sterne heißt: alles beim ersten Versuch richtig.</p>
     ${tables}`;
 }
@@ -69,6 +72,12 @@ function contentHtml() {
     <h3>Inseln</h3>
     ${ISLAND_ORDER.map(id => toggle('island:' + id, ISLANDS[id].name, s.islands[id])).join('')}
     <p class="msg" data-msg="islands"></p>
+    <h3>Programmierinsel</h3>
+    ${toggle('progPart2', 'Teil 2: Steuerrad', part2Visible(getState()), s.progPart2 === 'auto' || s.progPart2 === undefined
+    ? 'Erscheint von selbst, sobald Teil 1 geschafft ist. Hier können Sie ihn vorher einschalten oder ganz ausblenden.'
+    : 'Von Ihnen ' + (s.progPart2 ? 'eingeschaltet' : 'ausgeblendet') + '. Drehen links/rechts aus Sicht des Schiffs, Schleifen und Bedingungen – eher ab Ende der ersten Klasse.')}
+    <p>Fahrtempo des Schiffs:</p>
+    <div class="choices-row">${[['normal', 'Normal'], ['langsam', 'Langsam']].map(([v, l]) => `<button class="opt ${s.progSpeed === v ? 'on' : ''}" data-speed="${v}">${l}</button>`).join('')}</div>
     <h3>Schwierigkeit</h3>
     ${toggle('caps', 'Nur Großbuchstaben', s.caps, 'Alle Texte in Großbuchstaben; Aufgaben zur Groß- und Kleinschreibung entfallen.')}
     ${toggle('unlockAll', 'Alle Stationen freischalten', s.unlockAll, 'Ihr Kind kann jede Station sofort wählen, ohne die davor zu schaffen.')}`;
@@ -129,6 +138,8 @@ register('eltern', (el, { tab = 'fortschritt' }) => {
   body.addEventListener('click', async e => {
     const limit = e.target.closest('[data-limit]');
     if (limit) { setSetting('limitMin', Number(limit.dataset.limit)); render(); return; }
+    const speed = e.target.closest('[data-speed]');
+    if (speed) { setSetting('progSpeed', speed.dataset.speed); render(); return; }
 
     const sw = e.target.closest('[data-toggle]');
     if (sw) {
@@ -139,6 +150,8 @@ register('eltern', (el, { tab = 'fortschritt' }) => {
         const islands = { ...s.islands, [id]: !s.islands[id] };
         if (!Object.values(islands).some(Boolean)) { msg('islands', 'Mindestens eine Insel muss eingeschaltet bleiben.'); return; }
         setSetting('islands', islands);
+      } else if (key === 'progPart2') {
+        setSetting('progPart2', !part2Visible(getState()));
       } else {
         setSetting(key, !s[key]);
         applySettings();

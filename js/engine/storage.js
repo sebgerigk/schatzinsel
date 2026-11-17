@@ -37,12 +37,19 @@ async function dbPut(key, value) {
 const defaults = () => ({
   coins: 0, stars: {}, played: {}, seen: {}, last: {},
   // Einstellungen aus dem Elternbereich
-  settings: { caps: false, limitMin: 0, unlockAll: false, islands: { lesen: true, schreiben: true, rechnen: true } },
+  settings: {
+    caps: false, limitMin: 0, unlockAll: false, islands: { lesen: true, schreiben: true, rechnen: true, programmieren: true },
+    // Programmierinsel: Teil 2 (Steuerrad) 'auto' = sichtbar, sobald Teil 1 geschafft ist; Fahrtempo des Schiffs
+    progPart2: 'auto', progSpeed: 'normal',
+  },
   // Spielzeit: heute (Sekunden, Bonus) und Minuten der letzten Tage
   playtime: { date: '', sec: 0, bonus: 0 }, history: {},
   // Das Schiff des Kindes und was dafür schon gekauft wurde
   ship: { segel: 'rot', flagge: 'rot', rumpf: 'holz', figur: 'keine', extras: [] },
   owned: {},
+  // Kompass-Medaillen (Station -> true) und was am Kartentisch entstanden ist
+  medals: {},
+  werkstatt: { bilder: [], raetsel: [] },
 });
 
 function load() {
@@ -126,12 +133,29 @@ export function settings() {
 }
 
 /** Trägt eine geschaffte Station ein. Jede Runde bringt Münzen, die beste Wertung bleibt. */
-export function awardStation(id, stars) {
+export function awardStation(id, stars, medal = false) {
   state.coins += stars;
+  if (medal) { state.medals = state.medals || {}; state.medals[id] = true; }
   state.played[id] = (state.played[id] || 0) + 1;
   state.last = state.last || {};
   state.last[id] = todayKey();
   if (stars > (state.stars[id] || 0)) state.stars[id] = stars;
+  save();
+}
+
+/** Bilder und Rätsel vom Kartentisch: höchstens 12 je Art, das älteste fällt heraus. */
+export function werkstatt() {
+  state.werkstatt = { bilder: [], raetsel: [], ...(state.werkstatt || {}) };
+  return state.werkstatt;
+}
+export function saveWerk(kind, item) {
+  const w = werkstatt();
+  w[kind] = [item, ...w[kind]].slice(0, 12);
+  save();
+}
+export function removeWerk(kind, index) {
+  const w = werkstatt();
+  w[kind].splice(index, 1);
   save();
 }
 

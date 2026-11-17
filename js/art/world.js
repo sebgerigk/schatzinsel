@@ -30,7 +30,7 @@ export function palm(x, y, s = 1, flip = 1) {
 // ---------- Das Schiff des Kindes: Segel, Flagge, Rumpf, Bug und Extras sind austauschbar ----------
 const RAINBOW = ['#f0553f', '#ffcb3d', '#45b565', '#2f86d8', '#7c5cd6'];
 const NIGHT = '#2f2a3d';
-const SAILS = {
+export const SAILS = {
   rot: { base: '#fff7e2', stripe: CORAL },
   blau: { base: '#fff7e2', stripe: '#2f86d8' },
   sonne: { base: '#ffe58a', emblem: 'sonne' },
@@ -38,8 +38,8 @@ const SAILS = {
   pirat: { base: NIGHT, emblem: 'stern' },
   gold: { base: GOLD, stripe: GOLD2, emblem: 'stern' },
 };
-const FLAGS = { rot: CORAL, blau: '#2f86d8', gruen: G1, regenbogen: 'rainbow', stern: NIGHT };
-const HULLS = {
+export const FLAGS = { rot: CORAL, blau: '#2f86d8', gruen: G1, regenbogen: 'rainbow', stern: NIGHT };
+export const HULLS = {
   holz: { fill: WOOD, line: WOOD2, rail: GOLD },
   dunkel: { fill: '#7b4a2a', line: '#58321a', rail: GOLD },
   rot: { fill: '#d8453a', line: '#fff7e2', rail: '#fff7e2' },
@@ -60,6 +60,9 @@ const SHIP_EXTRAS = {
     <path d="M214 160 V187 M206 169 H222 M203 180 Q205 191 214 191 Q223 191 225 180" fill="none" stroke="#c5ccd6" stroke-width="3"/>`,
   schatz: () => `<path d="M188 138 Q188 124 201 124 Q214 124 214 138Z" fill="#b97a45" stroke-width="3"/>
     <rect x="188" y="136" width="26" height="14" rx="2" fill="#a3642f" stroke-width="3"/><rect x="197.5" y="132" width="7" height="8" rx="1.5" fill="${GOLD}" stroke-width="2"/>`,
+  steuerrad: () => `<g transform="translate(108 136)" stroke-width="2.5">
+    <path d="M0 -14 V14 M-14 0 H14 M-10 -10 L10 10 M10 -10 L-10 10" stroke-width="3.5"/><path d="M0 -14 V14 M-14 0 H14 M-10 -10 L10 10 M10 -10 L-10 10" stroke="${WOOD}" stroke-width="1.5"/>
+    <circle r="10" fill="none" stroke-width="6"/><circle r="10" fill="none" stroke="${WOOD}" stroke-width="3"/><circle r="3.5" fill="${GOLD}"/></g>`,
   koko: () => `<g transform="translate(84 124)" stroke-width="2.5">
     <ellipse cx="0" cy="15" rx="9.5" ry="12" fill="#ea4630"/><path d="M-9 12 Q-17 20 -11 28Z" fill="#2f86d8"/>
     <circle cx="0" cy="0" r="10" fill="#ea4630"/>
@@ -103,12 +106,12 @@ export function shipSvg(cfg) {
     <path d="M26 150 H240" stroke="${hull.rail}" stroke-width="4.5"/>
     <g fill="#9fdcf0"><circle cx="92" cy="187" r="8"/><circle cx="134" cy="187" r="8"/><circle cx="176" cy="187" r="8"/></g>
     ${(SHIP_FIGURES[c.figur] || SHIP_FIGURES.keine)()}
-    ${['laterne', 'wimpel', 'anker', 'schatz', 'koko'].filter(e => extras.includes(e)).map(e => SHIP_EXTRAS[e]()).join('')}
+    ${['laterne', 'wimpel', 'anker', 'schatz', 'steuerrad', 'koko'].filter(e => extras.includes(e)).map(e => SHIP_EXTRAS[e]()).join('')}
   `)}
   </svg>`;
 }
 
-function chestParts() {
+export function chestParts() {
   return `
     <ellipse class="chest-glow" cx="100" cy="80" rx="84" ry="50" fill="#fff3a8" stroke="none"/>
     <g class="chest-gold">
@@ -133,7 +136,7 @@ export function chestSvg() {
   return `<svg class="chest-svg" viewBox="0 0 200 170" aria-hidden="true">${group(chestParts())}</svg>`;
 }
 
-const coin = (x, y, r = 11) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${GOLD}"/><circle cx="${x}" cy="${y}" r="${r * 0.55}" fill="none" stroke="${GOLD2}" stroke-width="2.5"/>`;
+export const coin = (x, y, r = 11) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${GOLD}"/><circle cx="${x}" cy="${y}" r="${r * 0.55}" fill="none" stroke="${GOLD2}" stroke-width="2.5"/>`;
 
 function islandBase() {
   return `
@@ -190,6 +193,35 @@ const ISLAND_ART = {
     ${coin(118, 206)}${coin(232, 204)}${coin(248, 216, 9)}${coin(104, 220, 9)}
     <polygon class="twinkle" points="${starPoints(236, 96, 12, 4.5, 4)}" fill="#fff" stroke="none"/>
     <polygon class="twinkle t2" points="${starPoints(110, 108, 9, 3.5, 4)}" fill="#fff" stroke="none"/>`,
+};
+
+// Programmierinsel: Steuerrad im Sand, Wegweiser mit Pfeil-Brettern, Schatzkarte, Palme
+ISLAND_ART.programmieren = () => {
+  const spokes = Array.from({ length: 8 }, (_, i) => {
+    const a = i * Math.PI / 4;
+    const x1 = 150 + Math.cos(a) * 12, y1 = 128 + Math.sin(a) * 12, x2 = 150 + Math.cos(a) * 62, y2 = 128 + Math.sin(a) * 62;
+    return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke-width="11"/>
+      <path d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="${WOOD}" stroke-width="5"/>
+      <circle cx="${(150 + Math.cos(a) * 66).toFixed(1)}" cy="${(128 + Math.sin(a) * 66).toFixed(1)}" r="7" fill="${WOOD2}"/>`;
+  }).join('');
+  return `
+    ${palm(64, 196, 0.72, -1)}
+    <g class="helm-wheel">
+      ${spokes}
+      <circle cx="150" cy="128" r="46" fill="none" stroke-width="16"/>
+      <circle cx="150" cy="128" r="46" fill="none" stroke="${WOOD}" stroke-width="9"/>
+      <circle cx="150" cy="128" r="14" fill="${GOLD}"/>
+    </g>
+    <path d="M92 192 Q150 168 208 192 Q150 206 92 192Z" fill="${SAND}"/>
+    <rect x="252" y="96" width="9" height="106" rx="3" fill="${WOOD2}"/>
+    <path d="M232 104 H284 L296 114 L284 124 H232Z" fill="${WOOD}"/><path d="M244 114 H276 M268 108 L276 114 L268 120" fill="none" stroke="${PARCH}" stroke-width="3.5"/>
+    <path d="M282 132 H230 L218 142 L230 152 H282Z" fill="${WOOD}"/><path d="M270 142 H238 M246 136 L238 142 L246 148" fill="none" stroke="${PARCH}" stroke-width="3.5"/>
+    <path d="M238 160 H278 V186 H238Z" fill="${WOOD}"/><path d="M258 182 V164 M252 170 L258 164 L264 170" fill="none" stroke="${PARCH}" stroke-width="3.5"/>
+    <g transform="rotate(-8 118 214)">
+      <rect x="92" y="200" width="56" height="34" rx="5" fill="${PARCH}"/>
+      <path d="M100 224 q10 -12 20 -4 t16 -8" fill="none" stroke="${WOOD2}" stroke-width="2.5" stroke-dasharray="2 5"/>
+      <path d="M134 206 l8 8 M142 206 l-8 8" stroke="${CORAL}" stroke-width="3.5"/>
+    </g>`;
 };
 
 export function islandSvg(kind) {

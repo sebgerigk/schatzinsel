@@ -51,6 +51,8 @@ register('werft', el => {
     if (multi) { if (!ship.extras.includes(id)) ship.extras.push(id); } else ship[cat] = id;
     return ship;
   }
+  // Manche Teile gibt es erst, wenn eine bestimmte Station geschafft ist (z. B. das Steuerrad).
+  const locked = item => !!item.needs && !(state.stars[item.needs] > 0);
   const isOn = (c, item) => (c.multi ? (state.ship.extras || []).includes(item.id) : state.ship[c.cat] === item.id);
 
   function render() {
@@ -63,7 +65,8 @@ register('werft', el => {
       const cls = ['item', owned ? 'owned' : '', isOn(c, item) ? 'equipped' : '', trying && trying.item === item ? 'trying' : ''].join(' ');
       const tag = isOn(c, item) ? `<span class="item-tag on">${ICON.check}</span>`
         : owned ? '<span class="item-tag">Meins</span>'
-          : `<span class="item-tag price">${coinSvg()}${item.price}</span>`;
+          : locked(item) ? `<span class="item-tag">${ICON.lock}</span>`
+            : `<span class="item-tag price">${coinSvg()}${item.price}</span>`;
       return `<button class="${cls}" data-i="${i}">${shipSvg(shipWith(c.cat, item.id, c.multi))}<span class="item-name">${item.name}</span>${tag}</button>`;
     }).join('');
     if (trying) {
@@ -96,6 +99,12 @@ register('werft', el => {
       sfx('pop');
       render();
       koko.say(P(c.multi && wasOn ? 'werft_off' : 'werft_on'));
+      return;
+    }
+    if (locked(item)) {
+      sfx('wrong');
+      shake(btn);
+      koko.say(P('werft_locked'));
       return;
     }
     trying = { cat: c.cat, item };

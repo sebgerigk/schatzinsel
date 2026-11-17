@@ -50,6 +50,8 @@ export const SHIPYARD = [
       { id: 'wimpel', name: 'Wimpel', price: 12 },
       { id: 'schatz', name: 'Schatzkiste', price: 15 },
       { id: 'koko', name: 'Koko an Bord', price: 20 },
+      // needs: erst kaufbar, wenn diese Station geschafft ist
+      { id: 'steuerrad', name: 'Steuerrad', price: 12, needs: 'prog-meister' },
     ],
   },
 ];

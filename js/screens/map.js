@@ -1,4 +1,4 @@
-// Schatzkarte: Auswahl der drei Inseln.
+// Schatzkarte: Auswahl der Inseln.
 import { register, go } from '../engine/router.js';
 import { getState, setSetting, applySettings, settings } from '../engine/storage.js';
 import { openGate } from './gate.js';
@@ -10,6 +10,15 @@ import { createKoko } from '../art/koko.js';
 import { ICON, coinSvg, starSvg } from '../art/icons.js';
 
 let greeted = false;
+
+/** Gepunktete Wege vom Schiff zu jeder Insel (Inseln stehen gleichmäßig verteilt, jede zweite etwas tiefer). */
+function route(n) {
+  return Array.from({ length: n }, (_, i) => {
+    const x = 2 + 96 * (i + 0.5) / n;
+    const y = i % 2 ? 70 : 60;
+    return `M66 89 C ${(66 + x) / 2} 86, ${x} ${y + 16}, ${x.toFixed(1)} ${y}`;
+  }).join(' ');
+}
 
 register('map', el => {
   const state = getState();
@@ -29,9 +38,7 @@ register('map', el => {
 
   el.innerHTML = `
     <div class="map-sea"></div>
-    <svg class="map-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M66 89 C 44 86, 16 76, 19 60 M66 89 C 60 80, 52 76, 50 70 M66 89 C 74 84, 82 74, 81 60"/>
-    </svg>
+    <svg class="map-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="${route(shown.length)}"/></svg>
     <header class="hud">
       <div class="plank">Schatzkarte</div>
       <div class="hud-right">
@@ -42,7 +49,7 @@ register('map', el => {
         <button class="round-btn parents" aria-label="Elternbereich">${ICON.gear}</button>
       </div>
     </header>
-    <div class="islands">${islands}</div>
+    <div class="islands n${shown.length}">${islands}</div>
     <button class="map-ship" aria-label="Mein Schiff">${shipSvg(state.ship)}<span class="ship-label">Mein Schiff</span></button>
     <div class="map-compass">${compassSvg()}</div>`;
 
