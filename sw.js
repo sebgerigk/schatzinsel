@@ -1,16 +1,16 @@
 // Service Worker: macht die Schatzinsel offline nutzbar.
 // Strategie: alles aus dem Cache beantworten und im Hintergrund auffrischen –
 // so startet die App sofort und holt sich Updates beim nächsten Öffnen mit Netz.
-const CACHE = 'schatzinsel-v3';
+const CACHE = 'schatzinsel-v4';
 
 const CORE = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',
   'js/app.js',
   'js/engine/util.js', 'js/engine/storage.js', 'js/engine/content.js', 'js/engine/audio.js', 'js/engine/router.js',
   'js/art/koko.js', 'js/art/icons.js', 'js/art/world.js', 'js/art/pictures.js',
-  'js/content/stations.js', 'js/content/strokes.js',
+  'js/content/stations.js', 'js/content/strokes.js', 'js/content/shipyard.js',
   'js/games/rechnen.js', 'js/games/lesen.js', 'js/games/schreiben.js', 'js/games/build.js',
-  'js/screens/title.js', 'js/screens/map.js', 'js/screens/island.js', 'js/screens/round.js', 'js/screens/gallery.js',
+  'js/screens/title.js', 'js/screens/map.js', 'js/screens/island.js', 'js/screens/round.js', 'js/screens/gallery.js', 'js/screens/werft.js',
   'content/words.json', 'content/sentences.json', 'content/phrases.json', 'content/stories.json', 'content/extras.json',
   'assets/audio/index.json',
   'assets/icons/icon-180.png', 'assets/icons/icon-192.png', 'assets/icons/icon-512.png',

@@ -39,7 +39,7 @@ register('map', el => {
       </div>
     </header>
     <div class="islands">${islands}</div>
-    <div class="map-ship">${shipSvg()}</div>
+    <button class="map-ship" aria-label="Mein Schiff">${shipSvg(state.ship)}<span class="ship-label">Mein Schiff</span></button>
     <div class="map-compass">${compassSvg()}</div>`;
 
   const koko = createKoko();
@@ -64,6 +64,8 @@ register('map', el => {
     });
     koko.say(P(on ? 'caps_on' : 'caps_off'));
   });
+
+  el.querySelector('.map-ship').addEventListener('click', () => { sfx('sail'); go('werft'); });
 
   el.querySelector('.islands').addEventListener('click', e => {
     const btn = e.target.closest('.island');

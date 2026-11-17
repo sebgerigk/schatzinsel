@@ -5,11 +5,12 @@ import { shipSvg, skySvg, palm } from '../art/world.js';
 import { kokoSvg } from '../art/koko.js';
 import { ICON } from '../art/icons.js';
 import { INK } from '../engine/util.js';
-import { storageOk } from '../engine/storage.js';
+import { storageInfo, getState } from '../engine/storage.js';
 
 const letters = word => [...word].map((c, i) => `<span style="--i:${i}">${c}</span>`).join('');
 
 register('title', el => {
+  const info = storageInfo();
   el.innerHTML = `
     <div class="sky">${skySvg()}</div>
     <div class="wave wave-3"></div>
@@ -18,13 +19,14 @@ register('title', el => {
         <path d="M10 190 Q130 96 250 190Z" fill="#f8dc8e"/>
         ${palm(120, 150, 0.9)}${palm(160, 160, 0.62, -1)}
       </g></svg></div>
-    <div class="title-ship">${shipSvg()}</div>
+    <div class="title-ship">${shipSvg(getState().ship)}</div>
     <div class="wave wave-2"></div>
     <div class="wave wave-1"></div>
     <h1 class="logo" aria-label="Schatzinsel"><span class="logo-row">${letters('Schatz')}</span><span class="logo-row">${letters('insel')}</span></h1>
     <div class="title-koko">${kokoSvg()}</div>
     <button class="btn gold big start">${ICON.play}<span>Los geht's!</span></button>
-    ${storageOk ? '' : '<p class="storage-warning">Achtung: Auf diesem Gerät kann der Spielstand nicht gespeichert werden. In den Safari-Einstellungen „Alle Cookies blockieren" ausschalten und nicht im privaten Modus öffnen.</p>'}`;
+    <p class="save-status">${info.any ? `Spielstand gespeichert · ${info.coins} Münzen · Start Nr. ${info.launches}` : 'Spielstand wird nicht gespeichert'}</p>
+    ${info.any ? '' : '<p class="storage-warning">Achtung: Auf diesem Gerät kann der Spielstand nicht gespeichert werden. In den Safari-Einstellungen „Alle Cookies blockieren" ausschalten und nicht im privaten Modus öffnen.</p>'}`;
 
   el.querySelector('.start').addEventListener('click', () => {
     unlockAudio();

@@ -149,6 +149,8 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
 .logo-row span { display: inline-block; animation: letterBob 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * .13s); }
 .logo-row:nth-child(2) span { animation-delay: calc((var(--i) + 6) * .13s); }
 .title-koko { position: absolute; left: 6vw; bottom: 7vmin; width: 27vmin; z-index: 6; animation: kokoBob 3.2s ease-in-out infinite; }
+/* Kleine Statuszeile für Eltern: zeigt, ob und was gespeichert ist */
+.save-status { position: absolute; right: 2vmin; bottom: 1.4vmin; z-index: 8; font-weight: 700; font-size: clamp(11px, 1.7vmin, 15px); color: #fff; opacity: .75; text-transform: none; }
 .storage-warning { position: absolute; left: 50%; top: 24vmin; translate: -50% 0; z-index: 8; width: min(86vw, 640px); background: #fff3a8; border: 4px solid var(--ink); border-radius: 2vmin; padding: 1.2vmin 2vmin; font-weight: 700; font-size: clamp(15px, 2.4vmin, 22px); text-align: center; text-transform: none; }
 .start { position: absolute; left: 50%; bottom: 8vmin; translate: -50% 0; z-index: 7; animation: pulseBtn 1.7s ease-in-out infinite; }
 
@@ -180,7 +182,36 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
 }
 .isl-stars svg { width: 1.3em; }
 .isl-stars i { font-style: normal; opacity: .6; }
-.map-ship { position: absolute; left: 62%; bottom: 3.5vmin; width: 17vmin; z-index: 2; animation: bob 3.6s ease-in-out infinite; }
+.map-ship { position: absolute; left: 62%; bottom: 3.5vmin; width: 19vmin; z-index: 4; display: flex; flex-direction: column; align-items: center; animation: bob 3.6s ease-in-out infinite; }
+.map-ship:active { scale: .95; }
+.map-ship .ship-svg { width: 100%; overflow: visible; }
+.ship-label { margin-top: -1.2vmin; font-weight: 900; font-size: clamp(14px, 2.4vmin, 22px); background: var(--cream); border: 3px solid var(--ink); border-radius: 999px; padding: .05em .7em; white-space: nowrap; }
+
+/* ---------- Werft ---------- */
+.screen-werft { background: linear-gradient(#77d3f5, #dcf6fe 50%); }
+.werft-ship { position: absolute; left: 26%; top: calc(58% - 37vmin); width: 50vmin; translate: -50% 0; z-index: 3; animation: bob 4.2s ease-in-out infinite; transform-origin: 50% 90%; }
+.werft-ship .ship-svg { width: 100%; overflow: visible; }
+.shop { position: absolute; right: 2vmin; top: 12.5vmin; bottom: 2vmin; width: min(47vw, 66vmin); z-index: 6; display: flex; flex-direction: column; gap: 1.2vmin; padding: 1.4vmin; }
+.shop-tabs { display: flex; gap: .8vmin; }
+.shop-tab { flex: 1; font-weight: 800; font-size: clamp(13px, 2.2vmin, 20px); padding: .5em .1em; border-radius: 1.5vmin; background: #f1dba4; border: 3px solid var(--ink); white-space: nowrap; }
+.shop-tab[aria-selected="true"] { background: var(--gold); box-shadow: 0 .5vmin 0 var(--ink); }
+.shop-items { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1vmin; align-content: start; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: .4vmin; }
+.item { position: relative; display: flex; flex-direction: column; align-items: center; gap: .3vmin; padding: .8vmin .6vmin 1vmin; background: #fff; border: 3px solid var(--ink); border-radius: 2vmin; transition: transform .08s; }
+.item:active { transform: scale(.96); }
+.item .ship-svg { width: 100%; pointer-events: none; }
+.item .ship-flag { animation: none; }
+.item-name { font-weight: 800; font-size: clamp(12px, 1.9vmin, 17px); line-height: 1.1; text-align: center; }
+.item-tag { display: inline-flex; align-items: center; gap: .25em; font-weight: 900; font-size: clamp(13px, 2.1vmin, 19px); color: #7a674c; }
+.item-tag.price { color: var(--ink); }
+.item-tag svg { width: 1.25em; height: 1.25em; }
+.item-tag.on { color: var(--green2); }
+.item.equipped { background: #c9f2d3; border-color: var(--green2); }
+.item.trying { background: #fff3a8; box-shadow: 0 0 0 .6vmin var(--gold); }
+.shop-buy { min-height: 9vmin; display: flex; align-items: center; justify-content: center; }
+.shop-buy .btn svg { width: 1.3em; }
+.btn.poor { background: #c9c2b4; color: #fff; }
+.screen-werft .koko { z-index: 5; }
+.screen-werft .bubble { max-width: min(34vw, 340px); }
 .map-compass { position: absolute; right: 3vmin; bottom: 3vmin; width: 15vmin; z-index: 2; animation: compass 9s ease-in-out infinite; }
 .beam { opacity: .55; animation: beam 2.8s ease-in-out infinite alternate; }
 .twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 1.8s ease-in-out infinite; }
@@ -466,7 +497,11 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
   .islands { flex-wrap: wrap; align-content: center; inset: 14vmin 2vw 30vmin; gap: 2vmin 0; }
   .island { width: 46vw; }
   .island:nth-child(2) { margin-top: 0; }
-  .map-ship, .map-route { display: none; }
+  .map-route { display: none; }
+  .map-ship { left: auto; right: 3vmin; bottom: 21vmin; width: 22vmin; }
+  .werft-ship { left: 50%; top: 13vmin; width: 44vmin; }
+  .shop { left: 2vmin; right: 2vmin; width: auto; top: 52vmin; bottom: 27vmin; }
+  .screen-werft .wave { display: none; }
   .calc { flex-direction: column; gap: 3.4vmin; }
   .frame { width: 88vw; }
   .numpad { grid-template-columns: repeat(6, 1fr); }

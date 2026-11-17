@@ -2,17 +2,18 @@
 import { go } from './engine/router.js';
 import { loadContent } from './engine/content.js';
 import { initAudio } from './engine/audio.js';
-import { applySettings, requestPersistence } from './engine/storage.js';
+import { applySettings, requestPersistence, initStorage } from './engine/storage.js';
 import './screens/title.js';
 import './screens/map.js';
 import './screens/island.js';
 import './screens/round.js';
+import './screens/werft.js';
 import './screens/gallery.js';
 
 async function boot() {
-  applySettings();
   requestPersistence();
-  await Promise.all([loadContent(), initAudio()]);
+  await Promise.all([loadContent(), initAudio(), initStorage()]);
+  applySettings();
   go(location.hash === '#galerie' ? 'gallery' : 'title');
 }
 
@@ -20,7 +21,7 @@ async function boot() {
 document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('touchmove', e => {
-  if (!e.target.closest('.gallery, .stations')) e.preventDefault();
+  if (!e.target.closest('.gallery, .stations, .shop-items')) e.preventDefault();
 }, { passive: false });
 
 // Offline-Betrieb (nur über https bzw. localhost möglich).

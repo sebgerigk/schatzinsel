@@ -27,26 +27,83 @@ export function palm(x, y, s = 1, flip = 1) {
   </g>`;
 }
 
-export function shipSvg() {
-  const id = 'sail' + (++uid);
+// ---------- Das Schiff des Kindes: Segel, Flagge, Rumpf, Bug und Extras sind austauschbar ----------
+const RAINBOW = ['#f0553f', '#ffcb3d', '#45b565', '#2f86d8', '#7c5cd6'];
+const NIGHT = '#2f2a3d';
+const SAILS = {
+  rot: { base: '#fff7e2', stripe: CORAL },
+  blau: { base: '#fff7e2', stripe: '#2f86d8' },
+  sonne: { base: '#ffe58a', emblem: 'sonne' },
+  regenbogen: { rainbow: true },
+  pirat: { base: NIGHT, emblem: 'stern' },
+  gold: { base: GOLD, stripe: GOLD2, emblem: 'stern' },
+};
+const FLAGS = { rot: CORAL, blau: '#2f86d8', gruen: G1, regenbogen: 'rainbow', stern: NIGHT };
+const HULLS = {
+  holz: { fill: WOOD, line: WOOD2, rail: GOLD },
+  dunkel: { fill: '#7b4a2a', line: '#58321a', rail: GOLD },
+  rot: { fill: '#d8453a', line: '#fff7e2', rail: '#fff7e2' },
+  blau: { fill: '#2f6fb8', line: '#fff7e2', rail: GOLD },
+  koenig: { fill: '#3a2f5b', line: GOLD, rail: GOLD },
+};
+export const DEFAULT_SHIP = { segel: 'rot', flagge: 'rot', rumpf: 'holz', figur: 'keine', extras: [] };
+
+const rainbowGradient = id => `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${RAINBOW.map((c, i) => `<stop offset="${i / 5}" stop-color="${c}"/><stop offset="${(i + 1) / 5}" stop-color="${c}"/>`).join('')}</linearGradient>`;
+
+const SHIP_EXTRAS = {
+  ausguck: () => `<path d="M115 36 H151 L147 49 H119Z" fill="${WOOD}"/><path d="M119 42 H147" stroke="${WOOD2}" stroke-width="2.5"/>`,
+  laterne: () => `<path d="M44 150 V126"/><circle cx="44" cy="118" r="14" fill="#fff3a8" stroke="none" opacity=".6"/>
+    <rect x="37" y="110" width="14" height="17" rx="3" fill="#ffe07a" stroke-width="3"/><path d="M36 110 L44 102 L52 110Z" fill="${WOOD2}" stroke-width="3"/>`,
+  wimpel: () => `<path d="M134 24 Q200 70 258 138" fill="none" stroke-width="2.5"/>
+    ${[[160, 43], [185.5, 64], [210, 87], [234.5, 112]].map(([x, y], i) => `<path d="M${x - 7} ${y - 3} L${x + 7} ${y + 3} L${x - 2} ${y + 15}Z" fill="${RAINBOW[i]}" stroke-width="2.5"/>`).join('')}`,
+  anker: () => `<path d="M214 160 V187 M206 169 H222 M203 180 Q205 191 214 191 Q223 191 225 180" fill="none" stroke-width="7"/>
+    <path d="M214 160 V187 M206 169 H222 M203 180 Q205 191 214 191 Q223 191 225 180" fill="none" stroke="#c5ccd6" stroke-width="3"/>`,
+  schatz: () => `<path d="M188 138 Q188 124 201 124 Q214 124 214 138Z" fill="#b97a45" stroke-width="3"/>
+    <rect x="188" y="136" width="26" height="14" rx="2" fill="#a3642f" stroke-width="3"/><rect x="197.5" y="132" width="7" height="8" rx="1.5" fill="${GOLD}" stroke-width="2"/>`,
+  koko: () => `<g transform="translate(84 124)" stroke-width="2.5">
+    <ellipse cx="0" cy="15" rx="9.5" ry="12" fill="#ea4630"/><path d="M-9 12 Q-17 20 -11 28Z" fill="#2f86d8"/>
+    <circle cx="0" cy="0" r="10" fill="#ea4630"/>
+    <circle cx="-3.5" cy="-1" r="2" fill="${INK}" stroke="none"/><circle cx="3.5" cy="-1" r="2" fill="${INK}" stroke="none"/>
+    <path d="M-3.5 3 Q0 10 3.5 3Z" fill="${GOLD}" stroke-width="2"/>
+    <path d="M-11 -5 Q0 -19 11 -5 Q0 -9 -11 -5Z" fill="${NIGHT}"/></g>`,
+};
+const SHIP_FIGURES = {
+  keine: () => '',
+  stern: () => `<polygon points="${starPoints(263, 134, 12, 5.2)}" fill="${GOLD}" stroke-width="3"/>`,
+  fisch: () => `<path d="M236 160 L227 153 V167Z" fill="#f08a2c" stroke-width="3"/>
+    <path d="M236 160 Q250 148 266 160 Q250 172 236 160Z" fill="#ff9f43" stroke-width="3"/><circle cx="257" cy="158" r="1.8" fill="${INK}" stroke="none"/>`,
+};
+
+export function shipSvg(cfg) {
+  const c = { ...DEFAULT_SHIP, ...(cfg || {}) };
+  const sailStyle = SAILS[c.segel] || SAILS.rot;
+  const hull = HULLS[c.rumpf] || HULLS.holz;
+  const flag = FLAGS[c.flagge] || FLAGS.rot;
+  const extras = c.extras || [];
+  const n = ++uid;
   const sail = 'M72 50 Q133 64 194 50 Q204 94 194 134 Q133 122 72 134 Q62 94 72 50Z';
-  return `<svg class="ship-svg" viewBox="0 0 270 216" aria-hidden="true">
-  <defs><clipPath id="${id}"><path d="${sail}"/></clipPath></defs>
+  const stripes = sailStyle.stripe ? `<g clip-path="url(#sail${n})" stroke="none" fill="${sailStyle.stripe}">
+      <path d="M60 70 Q133 82 206 70 V85 Q133 97 60 85Z"/><path d="M60 100 Q133 110 206 100 V115 Q133 123 60 115Z"/></g>` : '';
+  const emblem = sailStyle.emblem === 'stern' ? `<polygon points="${starPoints(133, 93, 21, 9)}" fill="${sailStyle.stripe ? '#fff7e2' : GOLD}" stroke-width="3"/>`
+    : sailStyle.emblem === 'sonne' ? `<circle cx="133" cy="93" r="16" fill="#f5a623" stroke-width="3"/>` : '';
+  return `<svg class="ship-svg" viewBox="0 0 280 216" aria-hidden="true">
+  <defs><clipPath id="sail${n}"><path d="${sail}"/></clipPath>${rainbowGradient('rb' + n)}</defs>
   ${group(`
     <rect x="128" y="16" width="10" height="142" rx="4" fill="${WOOD2}"/>
-    <path class="ship-flag" d="M138 18 Q157 7 178 20 Q158 31 138 37Z" fill="${CORAL}"/>
-    <path d="${sail}" fill="#fff7e2"/>
-    <g clip-path="url(#${id})" stroke="none" fill="${CORAL}">
-      <path d="M60 70 Q133 82 206 70 V85 Q133 97 60 85Z"/>
-      <path d="M60 100 Q133 110 206 100 V115 Q133 123 60 115Z"/>
-    </g>
+    ${extras.includes('ausguck') ? SHIP_EXTRAS.ausguck() : ''}
+    <path class="ship-flag" d="M138 18 Q157 7 178 20 Q158 31 138 37Z" fill="${flag === 'rainbow' ? `url(#rb${n})` : flag}"/>
+    ${c.flagge === 'stern' ? `<polygon points="${starPoints(154, 22, 6, 2.6)}" fill="${GOLD}" stroke="none"/>` : ''}
+    <path d="${sail}" fill="${sailStyle.rainbow ? `url(#rb${n})` : sailStyle.base}"/>
+    ${stripes}${emblem}
     <path d="${sail}" fill="none"/>
     <path d="M236 150 L262 136"/>
-    <path d="M30 150 H236 Q230 196 198 206 H74 Q42 196 30 150Z" fill="${WOOD}"/>
-    <path d="M38 170 H228" stroke="${WOOD2}" stroke-width="4"/>
+    <path d="M30 150 H236 Q230 196 198 206 H74 Q42 196 30 150Z" fill="${hull.fill}"/>
+    <path d="M38 170 H228" stroke="${hull.line}" stroke-width="4"/>
     <path d="M26 150 H240" stroke-width="11"/>
-    <path d="M26 150 H240" stroke="${GOLD}" stroke-width="4.5"/>
+    <path d="M26 150 H240" stroke="${hull.rail}" stroke-width="4.5"/>
     <g fill="#9fdcf0"><circle cx="92" cy="187" r="8"/><circle cx="134" cy="187" r="8"/><circle cx="176" cy="187" r="8"/></g>
+    ${(SHIP_FIGURES[c.figur] || SHIP_FIGURES.keine)()}
+    ${['laterne', 'wimpel', 'anker', 'schatz', 'koko'].filter(e => extras.includes(e)).map(e => SHIP_EXTRAS[e]()).join('')}
   `)}
   </svg>`;
 }
