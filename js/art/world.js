@@ -30,7 +30,7 @@ export function palm(x, y, s = 1, flip = 1) {
 // ---------- Das Schiff des Kindes: Segel, Flagge, Rumpf, Bug und Extras sind austauschbar ----------
 const RAINBOW = ['#f0553f', '#ffcb3d', '#45b565', '#2f86d8', '#7c5cd6'];
 const NIGHT = '#2f2a3d';
-const SAILS = {
+export const SAILS = {
   rot: { base: '#fff7e2', stripe: CORAL },
   blau: { base: '#fff7e2', stripe: '#2f86d8' },
   sonne: { base: '#ffe58a', emblem: 'sonne' },
@@ -38,8 +38,8 @@ const SAILS = {
   pirat: { base: NIGHT, emblem: 'stern' },
   gold: { base: GOLD, stripe: GOLD2, emblem: 'stern' },
 };
-const FLAGS = { rot: CORAL, blau: '#2f86d8', gruen: G1, regenbogen: 'rainbow', stern: NIGHT };
-const HULLS = {
+export const FLAGS = { rot: CORAL, blau: '#2f86d8', gruen: G1, regenbogen: 'rainbow', stern: NIGHT };
+export const HULLS = {
   holz: { fill: WOOD, line: WOOD2, rail: GOLD },
   dunkel: { fill: '#7b4a2a', line: '#58321a', rail: GOLD },
   rot: { fill: '#d8453a', line: '#fff7e2', rail: '#fff7e2' },
@@ -60,6 +60,9 @@ const SHIP_EXTRAS = {
     <path d="M214 160 V187 M206 169 H222 M203 180 Q205 191 214 191 Q223 191 225 180" fill="none" stroke="#c5ccd6" stroke-width="3"/>`,
   schatz: () => `<path d="M188 138 Q188 124 201 124 Q214 124 214 138Z" fill="#b97a45" stroke-width="3"/>
     <rect x="188" y="136" width="26" height="14" rx="2" fill="#a3642f" stroke-width="3"/><rect x="197.5" y="132" width="7" height="8" rx="1.5" fill="${GOLD}" stroke-width="2"/>`,
+  steuerrad: () => `<g transform="translate(108 136)" stroke-width="2.5">
+    <path d="M0 -14 V14 M-14 0 H14 M-10 -10 L10 10 M10 -10 L-10 10" stroke-width="3.5"/><path d="M0 -14 V14 M-14 0 H14 M-10 -10 L10 10 M10 -10 L-10 10" stroke="${WOOD}" stroke-width="1.5"/>
+    <circle r="10" fill="none" stroke-width="6"/><circle r="10" fill="none" stroke="${WOOD}" stroke-width="3"/><circle r="3.5" fill="${GOLD}"/></g>`,
   koko: () => `<g transform="translate(84 124)" stroke-width="2.5">
     <ellipse cx="0" cy="15" rx="9.5" ry="12" fill="#ea4630"/><path d="M-9 12 Q-17 20 -11 28Z" fill="#2f86d8"/>
     <circle cx="0" cy="0" r="10" fill="#ea4630"/>
@@ -67,6 +70,47 @@ const SHIP_EXTRAS = {
     <path d="M-3.5 3 Q0 10 3.5 3Z" fill="${GOLD}" stroke-width="2"/>
     <path d="M-11 -5 Q0 -19 11 -5 Q0 -9 -11 -5Z" fill="${NIGHT}"/></g>`,
 };
+// Schätze aus der Werft (teure Teile). Tiere und Geräte bekommen eine Klasse, damit sie wackeln können.
+const TREASURES = {
+  zweimaster: (sailFill, stripe) => `<rect x="216" y="58" width="8" height="94" rx="3" fill="${WOOD2}"/>
+    <path d="M198 70 Q222 76 246 70 Q251 95 246 120 Q222 114 198 120 Q193 95 198 70Z" fill="${sailFill}"/>
+    ${stripe ? `<path d="M196 92 Q222 98 249 92 V101 Q222 107 196 101Z" fill="${stripe}" stroke="none"/>` : ''}
+    <path d="M198 70 Q222 76 246 70 Q251 95 246 120 Q222 114 198 120 Q193 95 198 70Z" fill="none"/>`,
+  rettungsboot: () => `<path d="M30 148 Q26 116 14 117 M14 117 V127" fill="none" stroke-width="3"/>
+    <path d="M2 127 H26 Q24 139 18 141 H10 Q4 139 2 127Z" fill="#f0553f"/><path d="M5 131 H23" stroke="#fff7e2" stroke-width="2.5"/>`,
+  konfetti: () => `<g class="pet"><rect x="56" y="140" width="18" height="10" rx="3" fill="${WOOD2}" stroke-width="3"/>
+    <path d="M60 142 L72 112 L82 118 L70 146Z" fill="${GOLD}" stroke-width="3"/><circle cx="64" cy="149" r="4" fill="${WOOD}" stroke-width="2.5"/>
+    <circle cx="74" cy="106" r="3" fill="#f0553f" stroke="none"/><circle cx="84" cy="110" r="3" fill="#2f86d8" stroke="none"/><circle cx="80" cy="100" r="3" fill="${G1}" stroke="none"/></g>`,
+  drache: () => `<path d="M234 150 Q252 146 254 130 Q256 116 266 114" fill="none" stroke-width="13"/>
+    <path d="M234 150 Q252 146 254 130 Q256 116 266 114" fill="none" stroke="${G1}" stroke-width="8"/>
+    <path d="M250 112 Q258 98 272 104 Q282 110 276 120 Q266 126 256 120Z" fill="${G1}"/>
+    <path d="M256 104 L252 94 L262 101 M264 101 L264 91 L270 101" fill="${G3}" stroke-width="2.5"/>
+    <circle cx="266" cy="110" r="2.6" fill="${INK}" stroke="none"/><path d="M272 117 Q276 120 279 117" fill="none" stroke-width="2"/>
+    <path d="M246 140 l6 -6 M250 128 l7 -3" stroke="${G3}" stroke-width="3"/>`,
+  katze: () => `<g class="pet"><path d="M150 150 Q148 132 160 130 Q172 132 170 150Z" fill="#f5a04a" stroke-width="3"/>
+    <path d="M170 146 Q182 144 178 132" fill="none" stroke-width="3"/>
+    <circle cx="160" cy="126" r="9" fill="#f5a04a" stroke-width="3"/><path d="M153 120 L152 111 L159 118 M161 118 L168 111 L167 120" fill="#f5a04a" stroke-width="2.5"/>
+    <circle cx="157" cy="125" r="1.6" fill="${INK}" stroke="none"/><circle cx="163" cy="125" r="1.6" fill="${INK}" stroke="none"/></g>`,
+  aeffchen: () => `<g class="pet"><path d="M122 112 Q112 124 118 134" fill="none" stroke="#8a5530" stroke-width="3"/>
+    <ellipse cx="124" cy="104" rx="7" ry="9" fill="#9b6a3e" stroke-width="2.5"/>
+    <circle cx="124" cy="90" r="7.5" fill="#9b6a3e" stroke-width="2.5"/><ellipse cx="124" cy="92" rx="4.5" ry="3.6" fill="#f2d2a6" stroke="none"/>
+    <circle cx="116.5" cy="89" r="3" fill="#f2d2a6" stroke-width="2"/><circle cx="131.5" cy="89" r="3" fill="#f2d2a6" stroke-width="2"/>
+    <circle cx="122" cy="88" r="1.3" fill="${INK}" stroke="none"/><circle cx="126" cy="88" r="1.3" fill="${INK}" stroke="none"/>
+    <path d="M129 100 L136 96 M129 108 L136 112" stroke-width="3"/></g>`,
+  schildkroete: () => `<g class="pet"><ellipse cx="226" cy="146" rx="5" ry="4" fill="#7fc98f" stroke-width="2.5"/>
+    <path d="M206 150 Q208 136 218 136 Q228 136 230 150Z" fill="${G2}" stroke-width="3"/><path d="M212 144 L218 138 L224 144" fill="none" stroke="${G3}" stroke-width="2.5"/>
+    <circle cx="227.5" cy="145" r="1.2" fill="${INK}" stroke="none"/></g>`,
+  moewe: () => `<g class="pet"><path d="M62 46 Q70 36 80 44" fill="#fff" stroke-width="3"/><ellipse cx="72" cy="44" rx="9" ry="6" fill="#fff" stroke-width="3"/>
+    <circle cx="78" cy="39" r="4.5" fill="#fff" stroke-width="2.5"/><path d="M82 39 L88 40 L82 42Z" fill="${GOLD}" stroke-width="1.8"/>
+    <circle cx="79" cy="38" r="1" fill="${INK}" stroke="none"/><path d="M70 50 V53 M74 50 V53" stroke="${GOLD2}" stroke-width="2"/></g>`,
+  nordstern: () => `<circle cx="133" cy="9" r="13" fill="#fff3a8" stroke="none" opacity=".75" class="twinkle"/>
+    <polygon points="${starPoints(133, 9, 9, 3.6, 4)}" fill="#fff" stroke-width="2.5"/>`,
+  kompassrose: () => `<g transform="translate(56 178)"><circle r="11" fill="#fdf1cf" stroke-width="3"/>
+    <path d="M0 -9 L3 0 L0 9 L-3 0Z" fill="#f0553f" stroke-width="2"/><path d="M-9 0 L0 3 L9 0 L0 -3Z" fill="#2f86d8" stroke-width="2"/></g>`,
+  perlenreling: () => Array.from({ length: 16 }, (_, i) => `<circle cx="${34 + i * 13.4}" cy="150" r="3.6" fill="#fffaf0" stroke-width="1.6"/>`).join(''),
+};
+const STAR_SAIL = [[96, 72], [118, 102], [146, 70], [170, 98], [104, 118], [176, 70], [140, 116]];
+
 const SHIP_FIGURES = {
   keine: () => '',
   stern: () => `<polygon points="${starPoints(263, 134, 12, 5.2)}" fill="${GOLD}" stroke-width="3"/>`,
@@ -76,10 +120,14 @@ const SHIP_FIGURES = {
 
 export function shipSvg(cfg) {
   const c = { ...DEFAULT_SHIP, ...(cfg || {}) };
-  const sailStyle = SAILS[c.segel] || SAILS.rot;
-  const hull = HULLS[c.rumpf] || HULLS.holz;
-  const flag = FLAGS[c.flagge] || FLAGS.rot;
   const extras = c.extras || [];
+  const has = id => extras.includes(id);
+  // Schätze, die Farben ersetzen: Goldschiff (Rumpf und Segel), Sternensegel, Weltumsegler-Flagge
+  let sailStyle = SAILS[c.segel] || SAILS.rot;
+  if (has('goldschiff')) sailStyle = SAILS.gold;
+  if (has('sternensegel')) sailStyle = { base: '#2b3a7a' };
+  const hull = has('goldschiff') ? { fill: GOLD, line: GOLD2, rail: '#fff7e2' } : HULLS[c.rumpf] || HULLS.holz;
+  const flag = has('weltflagge') ? '#2f86d8' : FLAGS[c.flagge] || FLAGS.rot;
   const n = ++uid;
   const sail = 'M72 50 Q133 64 194 50 Q204 94 194 134 Q133 122 72 134 Q62 94 72 50Z';
   const stripes = sailStyle.stripe ? `<g clip-path="url(#sail${n})" stroke="none" fill="${sailStyle.stripe}">
@@ -89,26 +137,37 @@ export function shipSvg(cfg) {
   return `<svg class="ship-svg" viewBox="0 0 280 216" aria-hidden="true">
   <defs><clipPath id="sail${n}"><path d="${sail}"/></clipPath>${rainbowGradient('rb' + n)}</defs>
   ${group(`
+    ${has('zweimaster') ? TREASURES.zweimaster(sailStyle.rainbow ? `url(#rb${n})` : sailStyle.base, sailStyle.stripe) : ''}
     <rect x="128" y="16" width="10" height="142" rx="4" fill="${WOOD2}"/>
     ${extras.includes('ausguck') ? SHIP_EXTRAS.ausguck() : ''}
     <path class="ship-flag" d="M138 18 Q157 7 178 20 Q158 31 138 37Z" fill="${flag === 'rainbow' ? `url(#rb${n})` : flag}"/>
-    ${c.flagge === 'stern' ? `<polygon points="${starPoints(154, 22, 6, 2.6)}" fill="${GOLD}" stroke="none"/>` : ''}
+    ${c.flagge === 'stern' && !has('weltflagge') ? `<polygon points="${starPoints(154, 22, 6, 2.6)}" fill="${GOLD}" stroke="none"/>` : ''}
+    ${has('weltflagge') ? `<circle cx="155" cy="22" r="7" fill="${G1}" stroke-width="2"/><path d="M150 19 q4 -3 7 0 M153 25 q3 2 6 -1" fill="none" stroke="${G2}" stroke-width="2"/>` : ''}
     <path d="${sail}" fill="${sailStyle.rainbow ? `url(#rb${n})` : sailStyle.base}"/>
     ${stripes}${emblem}
+    ${has('sternensegel') ? STAR_SAIL.map(([x, y], i) => `<polygon class="twinkle${i % 2 ? ' t2' : ''}" points="${starPoints(x, y, 7, 3)}" fill="${GOLD}" stroke="none"/>`).join('') : ''}
+    ${has('goldschiff') ? [[60, 160], [210, 142], [150, 40]].map(([x, y], i) => `<polygon class="twinkle${i % 2 ? ' t2' : ''}" points="${starPoints(x, y, 9, 3, 4)}" fill="#fff" stroke="none"/>`).join('') : ''}
     <path d="${sail}" fill="none"/>
+    ${has('nordstern') ? TREASURES.nordstern() : ''}
+    ${has('moewe') ? TREASURES.moewe() : ''}
+    ${has('aeffchen') ? TREASURES.aeffchen() : ''}
+    ${has('rettungsboot') ? TREASURES.rettungsboot() : ''}
     <path d="M236 150 L262 136"/>
     <path d="M30 150 H236 Q230 196 198 206 H74 Q42 196 30 150Z" fill="${hull.fill}"/>
     <path d="M38 170 H228" stroke="${hull.line}" stroke-width="4"/>
     <path d="M26 150 H240" stroke-width="11"/>
     <path d="M26 150 H240" stroke="${hull.rail}" stroke-width="4.5"/>
     <g fill="#9fdcf0"><circle cx="92" cy="187" r="8"/><circle cx="134" cy="187" r="8"/><circle cx="176" cy="187" r="8"/></g>
-    ${(SHIP_FIGURES[c.figur] || SHIP_FIGURES.keine)()}
-    ${['laterne', 'wimpel', 'anker', 'schatz', 'koko'].filter(e => extras.includes(e)).map(e => SHIP_EXTRAS[e]()).join('')}
+    ${has('drache') ? TREASURES.drache() : (SHIP_FIGURES[c.figur] || SHIP_FIGURES.keine)()}
+    ${has('perlenreling') ? TREASURES.perlenreling() : ''}
+    ${has('kompassrose') ? TREASURES.kompassrose() : ''}
+    ${['laterne', 'wimpel', 'anker', 'schatz', 'steuerrad', 'koko'].filter(e => extras.includes(e)).map(e => SHIP_EXTRAS[e]()).join('')}
+    ${['konfetti', 'katze', 'schildkroete'].filter(has).map(e => TREASURES[e]()).join('')}
   `)}
   </svg>`;
 }
 
-function chestParts() {
+export function chestParts() {
   return `
     <ellipse class="chest-glow" cx="100" cy="80" rx="84" ry="50" fill="#fff3a8" stroke="none"/>
     <g class="chest-gold">
@@ -133,7 +192,7 @@ export function chestSvg() {
   return `<svg class="chest-svg" viewBox="0 0 200 170" aria-hidden="true">${group(chestParts())}</svg>`;
 }
 
-const coin = (x, y, r = 11) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${GOLD}"/><circle cx="${x}" cy="${y}" r="${r * 0.55}" fill="none" stroke="${GOLD2}" stroke-width="2.5"/>`;
+export const coin = (x, y, r = 11) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${GOLD}"/><circle cx="${x}" cy="${y}" r="${r * 0.55}" fill="none" stroke="${GOLD2}" stroke-width="2.5"/>`;
 
 function islandBase() {
   return `
@@ -190,6 +249,35 @@ const ISLAND_ART = {
     ${coin(118, 206)}${coin(232, 204)}${coin(248, 216, 9)}${coin(104, 220, 9)}
     <polygon class="twinkle" points="${starPoints(236, 96, 12, 4.5, 4)}" fill="#fff" stroke="none"/>
     <polygon class="twinkle t2" points="${starPoints(110, 108, 9, 3.5, 4)}" fill="#fff" stroke="none"/>`,
+};
+
+// Programmierinsel: Steuerrad im Sand, Wegweiser mit Pfeil-Brettern, Schatzkarte, Palme
+ISLAND_ART.programmieren = () => {
+  const spokes = Array.from({ length: 8 }, (_, i) => {
+    const a = i * Math.PI / 4;
+    const x1 = 150 + Math.cos(a) * 12, y1 = 128 + Math.sin(a) * 12, x2 = 150 + Math.cos(a) * 62, y2 = 128 + Math.sin(a) * 62;
+    return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke-width="11"/>
+      <path d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="${WOOD}" stroke-width="5"/>
+      <circle cx="${(150 + Math.cos(a) * 66).toFixed(1)}" cy="${(128 + Math.sin(a) * 66).toFixed(1)}" r="7" fill="${WOOD2}"/>`;
+  }).join('');
+  return `
+    ${palm(64, 196, 0.72, -1)}
+    <g class="helm-wheel">
+      ${spokes}
+      <circle cx="150" cy="128" r="46" fill="none" stroke-width="16"/>
+      <circle cx="150" cy="128" r="46" fill="none" stroke="${WOOD}" stroke-width="9"/>
+      <circle cx="150" cy="128" r="14" fill="${GOLD}"/>
+    </g>
+    <path d="M92 192 Q150 168 208 192 Q150 206 92 192Z" fill="${SAND}"/>
+    <rect x="252" y="96" width="9" height="106" rx="3" fill="${WOOD2}"/>
+    <path d="M232 104 H284 L296 114 L284 124 H232Z" fill="${WOOD}"/><path d="M244 114 H276 M268 108 L276 114 L268 120" fill="none" stroke="${PARCH}" stroke-width="3.5"/>
+    <path d="M282 132 H230 L218 142 L230 152 H282Z" fill="${WOOD}"/><path d="M270 142 H238 M246 136 L238 142 L246 148" fill="none" stroke="${PARCH}" stroke-width="3.5"/>
+    <path d="M238 160 H278 V186 H238Z" fill="${WOOD}"/><path d="M258 182 V164 M252 170 L258 164 L264 170" fill="none" stroke="${PARCH}" stroke-width="3.5"/>
+    <g transform="rotate(-8 118 214)">
+      <rect x="92" y="200" width="56" height="34" rx="5" fill="${PARCH}"/>
+      <path d="M100 224 q10 -12 20 -4 t16 -8" fill="none" stroke="${WOOD2}" stroke-width="2.5" stroke-dasharray="2 5"/>
+      <path d="M134 206 l8 8 M142 206 l-8 8" stroke="${CORAL}" stroke-width="3.5"/>
+    </g>`;
 };
 
 export function islandSvg(kind) {

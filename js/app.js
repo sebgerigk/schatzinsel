@@ -12,6 +12,7 @@ import './screens/werft.js';
 import './screens/eltern.js';
 import './screens/pause.js';
 import './screens/gallery.js';
+import './screens/kartentisch.js';
 
 async function boot() {
   requestPersistence();
@@ -20,7 +21,7 @@ async function boot() {
   // Spielzeit zählen und nach Erreichen des Tageslimits freundlich verabschieden.
   // Eine laufende Runde wird nicht unterbrochen: geprüft wird nur beim Wechsel des Bildschirms.
   onScreen(setScreen);
-  setGuard(name => (['map', 'island', 'round', 'werft'].includes(name) && timeIsUp() ? 'pause' : name));
+  setGuard(name => (['map', 'island', 'round', 'werft', 'kartentisch'].includes(name) && timeIsUp() ? 'pause' : name));
   startPlaytime();
   go(location.hash === '#galerie' ? 'gallery' : 'title');
 }
@@ -29,7 +30,7 @@ async function boot() {
 document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('touchmove', e => {
-  if (!e.target.closest('.gallery, .stations, .shop-items, .eltern-body, textarea')) e.preventDefault();
+  if (!e.target.closest('.gallery, .stations, .shop-items, .eltern-body, .tisch-list, textarea')) e.preventDefault();
 }, { passive: false });
 
 // Offline-Betrieb (nur über https bzw. localhost möglich).

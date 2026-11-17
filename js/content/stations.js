@@ -1,4 +1,4 @@
-// Die drei Inseln und ihre Stationen. Reihenfolge = Lernweg.
+// Die vier Inseln und ihre Stationen. Reihenfolge = Lernweg.
 // Die ids sind sprechend und bleiben stabil, damit der Spielstand erhalten bleibt,
 // wenn später Stationen dazwischen eingefügt werden.
 export const ISLANDS = {
@@ -51,12 +51,42 @@ export const ISLANDS = {
       { id: 'rechnen-luecke', title: 'Welche Zahl fehlt?', game: 'rechnen', opts: { kind: 'missing20' } },
     ],
   },
+  programmieren: {
+    name: 'Programmierinsel',
+    welcome: 'welcome_programmieren',
+    stations: [
+      // Teil 1 – Bildschirm-Pfeile (erste Klasse). set: Kartensatz aus content/seekarten.json
+      { id: 'prog-ablauf', title: 'Was kommt zuerst?', game: 'denken', opts: { kind: 'ablauf' } },
+      { id: 'prog-planen', title: 'Erst planen', game: 'programmieren', opts: { kind: 'planen', set: 'planen', probe: true } },
+      { id: 'prog-reise', title: 'Lange Reise', game: 'programmieren', opts: { kind: 'planen', set: 'reise' } },
+      { id: 'prog-vorhersage', title: 'Wo landet es?', game: 'programmieren', opts: { kind: 'vorher', set: 'reise' } },
+      { id: 'prog-fehler', title: 'Fehler finden', game: 'programmieren', opts: { kind: 'fehler', set: 'reise' } },
+      { id: 'prog-muster', title: 'Was kommt dann?', game: 'denken', opts: { kind: 'muster' } },
+      { id: 'prog-strudel', title: 'Wiederholen', game: 'programmieren', opts: { kind: 'planen', set: 'strudel' } },
+      { id: 'prog-treppe', title: 'Treppen', game: 'programmieren', opts: { kind: 'planen', set: 'treppe' } },
+      { id: 'prog-waage', title: 'Schätze sortieren', game: 'denken', opts: { kind: 'waage' } },
+      // Teil 2 – Steuerrad (später). part: 2 -> im Elternbereich ausblendbar
+      { id: 'prog-steuerrad', title: 'Steuerrad', part: 2, game: 'programmieren', opts: { kind: 'planen', set: 'drehen' } },
+      { id: 'prog-kurven', title: 'Kurvenfahrt', part: 2, game: 'programmieren', opts: { kind: 'planen', set: 'kurven' } },
+      { id: 'prog-rundfahrt', title: 'Rund um die Insel', part: 2, game: 'programmieren', opts: { kind: 'planen', set: 'rund' } },
+      { id: 'prog-ausguck', title: 'Der Ausguck', part: 2, game: 'programmieren', opts: { kind: 'regel' } },
+      { id: 'prog-meister', title: 'Meisterprüfung', part: 2, game: 'programmieren', opts: { kind: 'mix' } },
+    ],
+  },
 };
 
-export const ISLAND_ORDER = ['lesen', 'schreiben', 'rechnen'];
+export const ISLAND_ORDER = ['lesen', 'schreiben', 'rechnen', 'programmieren'];
 
 /** Stationen, die mit den aktuellen Einstellungen gezeigt werden (idx = Platz in der vollen Liste). */
 export function visibleStations(isl, state) {
   const caps = !!(state.settings && state.settings.caps);
-  return isl.stations.map((s, idx) => ({ ...s, idx })).filter(s => !(caps && s.lower));
+  const part2 = part2Visible(state);
+  return isl.stations.map((s, idx) => ({ ...s, idx })).filter(s => !(caps && s.lower) && !(s.part === 2 && !part2));
+}
+
+/** Teil 2 der Programmierinsel: von den Eltern ein- oder ausgeschaltet, sonst sichtbar, sobald Teil 1 geschafft ist. */
+export function part2Visible(state) {
+  const s = state.settings || {};
+  if (s.progPart2 === true || s.progPart2 === false) return s.progPart2;
+  return !!s.unlockAll || (state.stars && state.stars['prog-waage'] > 0);
 }

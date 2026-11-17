@@ -8,6 +8,7 @@ import { ISLANDS, visibleStations } from '../content/stations.js';
 import { sceneSvg, chestSvg } from '../art/world.js';
 import { createKoko } from '../art/koko.js';
 import { ICON, coinSvg, starSvg } from '../art/icons.js';
+import { medalSvg, tableSvg } from '../art/sea.js';
 
 const welcomed = new Set();
 const START = 19;   // Abstand der ersten Station vom linken Rand (vmin)
@@ -34,13 +35,18 @@ register('island', (el, { island }) => {
   const unlocked = i => unlockAll || i === 0 || stars(list[i - 1]) > 0;
   const allDone = list.every(s => stars(s) > 0);
   const nextIdx = list.findIndex(s => !(stars(s) > 0));
+  // Der Kartentisch (freies Spielen) steht auf der Programmierinsel, sobald die „Lange Reise" geschafft ist.
+  const table = island === 'programmieren' && (unlockAll || state.stars['prog-reise'] > 0);
 
   el.innerHTML = `
     <div class="scene">${sceneSvg()}</div>
     <header class="hud">
       <button class="round-btn back" aria-label="Zurück zur Karte">${ICON.back}</button>
       <div class="plank">${isl.name}</div>
-      <div class="coins">${coinSvg()}<b>${state.coins}</b></div>
+      <div class="hud-right">
+        ${table ? `<button class="round-btn tisch-btn" aria-label="Kartentisch">${tableSvg()}</button>` : ''}
+        <div class="coins">${coinSvg()}<b>${state.coins}</b></div>
+      </div>
     </header>
     <div class="stations"><div class="track" style="width:${width}vmin">
       <svg class="route" viewBox="0 0 ${width} 100" preserveAspectRatio="none" aria-hidden="true"><path d="${route}"/></svg>
@@ -48,7 +54,7 @@ register('island', (el, { island }) => {
         const open = unlocked(i);
         return `<button class="station ${open ? 'open' : 'locked'} ${i === nextIdx ? 'next' : ''}" data-i="${i}" style="left:${pos[i].x}vmin;top:${pos[i].y}%">
           <span class="medal">${open ? i + 1 : ICON.lock}</span>
-          <span class="st-stars">${[1, 2, 3].map(k => starSvg(k <= stars(s))).join('')}</span>
+          <span class="st-stars">${[1, 2, 3].map(k => starSvg(k <= stars(s))).join('')}${(state.medals || {})[s.id] ? medalSvg() : ''}</span>
           <span class="st-title">${s.title}</span>
         </button>`;
       }).join('')}
@@ -70,6 +76,7 @@ register('island', (el, { island }) => {
   }, { passive: false });
 
   el.querySelector('.back').addEventListener('click', () => { sfx('tap'); go('map'); });
+  if (table) el.querySelector('.tisch-btn').addEventListener('click', () => { sfx('pop'); go('kartentisch'); });
   scroller.addEventListener('click', e => {
     const btn = e.target.closest('.station');
     if (!btn) return;

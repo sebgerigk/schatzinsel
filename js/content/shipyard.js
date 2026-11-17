@@ -52,4 +52,39 @@ export const SHIPYARD = [
       { id: 'koko', name: 'Koko an Bord', price: 20 },
     ],
   },
+  {
+    // Teure Schätze zum Sparen. thumb: eigenes Vorschaubild (für Dinge, die nicht am Schiff sind).
+    // needs: Leistung aus js/content/schaetze.js, die zusätzlich zu den Münzen nötig ist.
+    cat: 'schaetze', title: 'Schätze', multi: true, special: true,
+    items: [
+      // Am Schiff
+      { id: 'moewe', name: 'Möwe', price: 40 },
+      { id: 'rettungsboot', name: 'Rettungsboot', price: 50 },
+      { id: 'katze', name: 'Schiffskatze', price: 60 },
+      { id: 'aeffchen', name: 'Äffchen', price: 60 },
+      { id: 'schildkroete', name: 'Schildkröte', price: 60 },
+      { id: 'drache', name: 'Drachenkopf', price: 70 },
+      { id: 'konfetti', name: 'Konfettikanone', price: 70 },
+      { id: 'sternensegel', name: 'Sternensegel', price: 80 },
+      { id: 'zweimaster', name: 'Zweimaster', price: 100 },
+      // Auf der Schatzkarte
+      { id: 'delfin', name: 'Delfin', price: 80, thumb: 'delfin' },
+      { id: 'wal', name: 'Wal', price: 120, thumb: 'wal' },
+      { id: 'regenbogen', name: 'Regenbogen', price: 60, thumb: 'regenbogen' },
+      { id: 'schnee', name: 'Schnee', price: 60, thumb: 'schnee' },
+      { id: 'feuerwerk', name: 'Feuerwerk', price: 80, thumb: 'feuerwerk' },
+      { id: 'nacht', name: 'Nachtfahrt', price: 90, thumb: 'nacht' },
+      // Klänge: das Schiff antippen
+      { id: 'glocke', name: 'Schiffsglocke', price: 30, thumb: 'glocke' },
+      { id: 'nebelhorn', name: 'Nebelhorn', price: 40, thumb: 'nebelhorn' },
+      { id: 'shanty', name: 'Seemannslied', price: 50, thumb: 'shanty' },
+      // Ehren-Schätze: Münzen und eine Leistung
+      { id: 'steuerrad', name: 'Steuerrad', price: 40, needs: 'meister' },
+      { id: 'weltflagge', name: 'Weltumsegler-Flagge', price: 60, needs: 'weltumsegler' },
+      { id: 'kompassrose', name: 'Kompassrose', price: 60, needs: 'kompass5' },
+      { id: 'nordstern', name: 'Nordstern', price: 70, needs: 'tage7' },
+      { id: 'perlenreling', name: 'Perlenreling', price: 100, needs: 'sterne100' },
+      { id: 'goldschiff', name: 'Goldenes Schatzschiff', price: 150, needs: 'inselmeister' },
+    ],
+  },
 ];
