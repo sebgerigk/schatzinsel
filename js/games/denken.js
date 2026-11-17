@@ -6,7 +6,8 @@ import { P } from '../engine/content.js';
 import { sfx } from '../engine/audio.js';
 import { shuffle, shake, wait, pick, burst, rnd } from '../engine/util.js';
 import { ICON } from '../art/icons.js';
-import { SEQUENCES, THINGS, sackSvg, scaleSvg, featherSvg, anchorSvg } from '../art/denkbilder.js';
+import { THINGS, sackSvg, scaleSvg, featherSvg, anchorSvg } from '../art/denkbilder.js';
+import { SEQUENCES } from '../art/bildfolgen.js';
 
 const INTRO = { ablauf: 'prog_ablauf_intro', muster: 'prog_muster_intro', waage: 'prog_waage_intro' };
 
@@ -16,7 +17,10 @@ export const denken = {
 
   makeTasks({ kind, n = 6 }) {
     if (kind === 'ablauf') {
-      return shuffle(SEQUENCES).slice(0, n).sort((a, b) => a.frames.length - b.frames.length).map(seq => ({ kind, seq }));
+      // Erst vier Folgen mit drei Bildern, zum Schluss zwei mit vier Bildern.
+      const three = shuffle(SEQUENCES.filter(s => s.frames.length === 3)).slice(0, n - 2);
+      const four = shuffle(SEQUENCES.filter(s => s.frames.length === 4)).slice(0, 2);
+      return [...three, ...four].map(seq => ({ kind, seq }));
     }
     if (kind === 'muster') {
       const shapes = ['AB', 'AB', 'AAB', 'ABB', 'ABC', 'AABB'];
