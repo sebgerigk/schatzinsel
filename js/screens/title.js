@@ -25,7 +25,6 @@ register('title', el => {
     <h1 class="logo" aria-label="Schatzinsel"><span class="logo-row">${letters('Schatz')}</span><span class="logo-row">${letters('insel')}</span></h1>
     <div class="title-koko">${kokoSvg()}</div>
     <button class="btn gold big start">${ICON.play}<span>Los geht's!</span></button>
-    <p class="save-status">${info.any ? `Spielstand gespeichert · ${info.coins} Münzen · Start Nr. ${info.launches}` : 'Spielstand wird nicht gespeichert'}</p>
     ${info.any ? '' : '<p class="storage-warning">Achtung: Auf diesem Gerät kann der Spielstand nicht gespeichert werden. In den Safari-Einstellungen „Alle Cookies blockieren" ausschalten und nicht im privaten Modus öffnen.</p>'}`;
 
   el.querySelector('.start').addEventListener('click', () => {

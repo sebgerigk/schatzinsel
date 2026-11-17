@@ -1,6 +1,6 @@
 // Insel-Bildschirm: der Weg mit den Stationen. Bei vielen Stationen lässt sich der Weg seitlich schieben.
 import { register, go } from '../engine/router.js';
-import { getState } from '../engine/storage.js';
+import { getState, settings } from '../engine/storage.js';
 import { P } from '../engine/content.js';
 import { sfx } from '../engine/audio.js';
 import { shake } from '../engine/util.js';
@@ -30,7 +30,8 @@ register('island', (el, { island }) => {
     route += ` C${mx} ${a.y}, ${mx} ${b.y}, ${b.x} ${b.y}`;
   }
   const stars = s => state.stars[s.id] || 0;
-  const unlocked = i => i === 0 || stars(list[i - 1]) > 0;
+  const unlockAll = settings().unlockAll;   // Einstellung der Eltern
+  const unlocked = i => unlockAll || i === 0 || stars(list[i - 1]) > 0;
   const allDone = list.every(s => stars(s) > 0);
   const nextIdx = list.findIndex(s => !(stars(s) > 0));
 

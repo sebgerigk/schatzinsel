@@ -1,19 +1,22 @@
 // Schatzkarte: Auswahl der drei Inseln.
 import { register, go } from '../engine/router.js';
-import { getState, setSetting, applySettings } from '../engine/storage.js';
+import { getState, setSetting, applySettings, settings } from '../engine/storage.js';
+import { openGate } from './gate.js';
 import { P } from '../engine/content.js';
 import { sfx, preload } from '../engine/audio.js';
 import { ISLANDS, ISLAND_ORDER, visibleStations } from '../content/stations.js';
 import { islandSvg, shipSvg, compassSvg } from '../art/world.js';
 import { createKoko } from '../art/koko.js';
-import { coinSvg, starSvg } from '../art/icons.js';
+import { ICON, coinSvg, starSvg } from '../art/icons.js';
 
 let greeted = false;
 
 register('map', el => {
   const state = getState();
   const caps = !!(state.settings && state.settings.caps);
-  const islands = ISLAND_ORDER.map(id => {
+  // Eltern können einzelne Inseln ausblenden.
+  const shown = ISLAND_ORDER.filter(id => settings().islands[id]);
+  const islands = shown.map(id => {
     const isl = ISLANDS[id];
     const list = visibleStations(isl, state);
     const got = list.reduce((sum, s) => sum + (state.stars[s.id] || 0), 0);
@@ -36,6 +39,7 @@ register('map', el => {
           <span class="opt opt-mixed">Abc</span><span class="opt opt-caps">ABC</span>
         </button>
         <div class="coins">${coinSvg()}<b>${state.coins}</b></div>
+        <button class="round-btn parents" aria-label="Elternbereich">${ICON.gear}</button>
       </div>
     </header>
     <div class="islands">${islands}</div>
@@ -45,7 +49,8 @@ register('map', el => {
   const koko = createKoko();
   el.appendChild(koko.el);
   if (!greeted) { greeted = true; koko.say(P('map')); } else koko.show(P('map_again'));
-  preload(ISLAND_ORDER.map(id => P(ISLANDS[id].welcome)));
+  preload(shown.map(id => P(ISLANDS[id].welcome)));
+  el.querySelector('.parents').addEventListener('click', () => openGate(() => go('eltern')));
 
   // Schalter „nur Großbuchstaben": gilt sofort für alle Wörter, Sätze und Texte.
   const toggle = el.querySelector('.caps-toggle');
@@ -56,7 +61,7 @@ register('map', el => {
     applySettings();
     sfx('pop');
     // Sternezahl anpassen: mit Großbuchstaben entfallen die Stationen für kleine Buchstaben.
-    ISLAND_ORDER.forEach(id => {
+    shown.forEach(id => {
       const vis = visibleStations(ISLANDS[id], getState());
       const box = el.querySelector(`.island-${id} .isl-stars`);
       box.querySelector('b').textContent = vis.reduce((sum, s) => sum + (getState().stars[s.id] || 0), 0);

@@ -35,7 +35,11 @@ async function dbPut(key, value) {
 }
 
 const defaults = () => ({
-  coins: 0, stars: {}, played: {}, seen: {}, settings: { caps: false },
+  coins: 0, stars: {}, played: {}, seen: {}, last: {},
+  // Einstellungen aus dem Elternbereich
+  settings: { caps: false, limitMin: 0, unlockAll: false, islands: { lesen: true, schreiben: true, rechnen: true } },
+  // Spielzeit: heute (Sekunden, Bonus) und Minuten der letzten Tage
+  playtime: { date: '', sec: 0, bonus: 0 }, history: {},
   // Das Schiff des Kindes und was dafür schon gekauft wurde
   ship: { segel: 'rot', flagge: 'rot', rumpf: 'holz', figur: 'keine', extras: [] },
   owned: {},
@@ -107,10 +111,26 @@ if (typeof document !== 'undefined') {
   window.addEventListener('pagehide', () => save());
 }
 
+/** Heutiges Datum als JJJJ-MM-TT (Ortszeit). */
+export function todayKey() {
+  const d = new Date();
+  const two = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`;
+}
+
+/** Alle Einstellungen, ergänzt um Vorgaben für alles, was in einem älteren Spielstand noch fehlt. */
+export function settings() {
+  const base = defaults().settings;
+  const own = state.settings || {};
+  return { ...base, ...own, islands: { ...base.islands, ...(own.islands || {}) } };
+}
+
 /** Trägt eine geschaffte Station ein. Jede Runde bringt Münzen, die beste Wertung bleibt. */
 export function awardStation(id, stars) {
   state.coins += stars;
   state.played[id] = (state.played[id] || 0) + 1;
+  state.last = state.last || {};
+  state.last[id] = todayKey();
   if (stars > (state.stars[id] || 0)) state.stars[id] = stars;
   save();
 }
@@ -161,7 +181,7 @@ export function buyPart(cat, item, multi) {
 
 /** Einstellung ändern, z. B. setSetting('caps', true) für „nur Großbuchstaben". */
 export function setSetting(key, value) {
-  state.settings = { ...defaults().settings, ...state.settings, [key]: value };
+  state.settings = { ...settings(), [key]: value };
   save();
 }
 
@@ -170,7 +190,33 @@ export function applySettings() {
   document.documentElement.classList.toggle('caps', !!(state.settings && state.settings.caps));
 }
 
-export function resetState() {
-  state = defaults();
+/** Fortschritt löschen; die Einstellungen der Eltern bleiben erhalten. */
+export function resetProgress() {
+  const keep = { settings: settings(), launches: state.launches, rev: state.rev };
+  state = Object.assign(defaults(), keep);
   save();
+}
+
+const BACKUP_PREFIX = 'SCHATZINSEL1:';
+
+/** Spielstand als Text zum Aufbewahren (z. B. in den Notizen). */
+export function exportState() {
+  const json = JSON.stringify(state);
+  return BACKUP_PREFIX + btoa(unescape(encodeURIComponent(json)));
+}
+
+/** Spielstand aus einer Sicherung laden. Gibt false zurück, wenn der Text keine gültige Sicherung ist. */
+export function importState(text) {
+  try {
+    const clean = String(text).trim();
+    if (!clean.startsWith(BACKUP_PREFIX)) return false;
+    const data = JSON.parse(decodeURIComponent(escape(atob(clean.slice(BACKUP_PREFIX.length).replace(/\s+/g, '')))));
+    if (!data || typeof data !== 'object' || typeof data.coins !== 'number' || typeof data.stars !== 'object') return false;
+    data.rev = Math.max(data.rev || 0, state.rev || 0) + 1;   // damit die Sicherung beim nächsten Start gewinnt
+    state = Object.assign(defaults(), data);
+    save();
+    return true;
+  } catch {
+    return false;
+  }
 }

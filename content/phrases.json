@@ -14,6 +14,7 @@
   "werft_bought": ["Ahoi! Das sieht toll aus!", "Was für ein schönes Schiff!", "Prima gewählt, Kapitän!"],
   "werft_on": "Schon an Bord!",
   "werft_off": "Das nehmen wir wieder ab.",
+  "pause": "Für heute haben wir genug geübt. Ich bin ganz müde. Bis morgen, Kapitän!",
   "locked": "Hier geht es noch nicht weiter. Schaffe erst die Station davor!",
   "calc_intro": "Wie viel ist das? Tippe die Zahl ein und dann auf den Haken.",
   "calc_hint": "Fast! Zähle die Münzen, das hilft dir.",
