@@ -132,15 +132,18 @@ export function settings() {
   return { ...base, ...own, islands: { ...base.islands, ...(own.islands || {}) } };
 }
 
-/** Trägt eine geschaffte Station ein. Jede Runde bringt Münzen, die beste Wertung bleibt. */
+/** Trägt eine geschaffte Station ein. Jede Runde bringt Münzen (zurückgegeben), die beste Wertung bleibt. */
 export function awardStation(id, stars, medal = false) {
-  state.coins += stars;
+  // Eine Station, die schon drei Sterne hat, bringt beim Wiederholen höchstens noch eine Münze.
+  const coins = (state.stars[id] || 0) >= 3 ? Math.min(stars, 1) : stars;
+  state.coins += coins;
   if (medal) { state.medals = state.medals || {}; state.medals[id] = true; }
   state.played[id] = (state.played[id] || 0) + 1;
   state.last = state.last || {};
   state.last[id] = todayKey();
   if (stars > (state.stars[id] || 0)) state.stars[id] = stars;
   save();
+  return coins;
 }
 
 /** Bilder und Rätsel vom Kartentisch: höchstens 12 je Art, das älteste fällt heraus. */

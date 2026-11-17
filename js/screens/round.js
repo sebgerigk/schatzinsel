@@ -95,13 +95,13 @@ register('round', (el, { island, idx }) => {
     const medalGame = !!(game.hasMedal && game.hasMedal(station.opts));
     const hadMedal = !!(getState().medals || {})[station.id];
     const medal = medalGame && allBest;
-    awardStation(station.id, stars, medal);
+    const coins = awardStation(station.id, stars, medal);
     const hasNext = idx + 1 < isl.stations.length;
     area.innerHTML = '';
     const panel = h(`<div class="result panel">
       <div class="result-chest">${chestSvg()}</div>
       <div class="result-stars">${[1, 2, 3].map(k => `<span class="rs ${k <= stars ? 'on' : ''}">${starSvg(k <= stars)}</span>`).join('')}</div>
-      <div class="result-coins">${Array.from({ length: stars }, () => `<span class="rc">${coinSvg()}</span>`).join('')}</div>
+      <div class="result-coins">${Array.from({ length: coins }, () => `<span class="rc">${coinSvg()}</span>`).join('')}</div>
       ${medal ? `<div class="result-medal">${medalSvg()}</div>` : ''}
       <div class="result-actions">
         <button class="btn again">${ICON.again}<span>Nochmal</span></button>
@@ -123,17 +123,19 @@ register('round', (el, { island, idx }) => {
       if (!alive) return;
       sfx('star');
       panel.querySelectorAll('.rs')[k].classList.add('show');
-      panel.querySelectorAll('.rc')[k].classList.add('show');
+      if (k < coins) panel.querySelectorAll('.rc')[k].classList.add('show');
     }
     panel.classList.add('ready');
+    // Wiederholt mit schon drei Sternen: Koko erklärt, warum es nur eine Münze gibt.
+    const resultKey = coins < stars ? 'result_repeat' : 'result' + stars;
     if (medal) {
       await wait(300);
       if (!alive) return;
       sfx('fanfare');
       panel.querySelector('.result-medal').classList.add('show');
-      await koko.say(P(hadMedal ? 'result' + stars : 'prog_medaille'));
+      await koko.say(P(hadMedal ? resultKey : 'prog_medaille'));
     } else {
-      await koko.say(P('result' + stars));
+      await koko.say(P(resultKey));
       // Die Medaille wird erst erwähnt, wenn die Station schon drei Sterne hat.
       if (alive && medalGame && stars === 3 && !hadMedal) koko.say(P('prog_medaille_tipp'));
     }

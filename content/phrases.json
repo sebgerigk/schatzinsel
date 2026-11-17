@@ -47,6 +47,7 @@
   "result3": "Fantastisch! Du bekommst drei Goldmünzen!",
   "result2": "Gut gemacht! Du bekommst zwei Goldmünzen!",
   "result1": "Geschafft! Du bekommst eine Goldmünze!",
+  "result_repeat": "Super gespielt! Diese Station kannst du schon richtig gut. Darum gibt es diesmal eine Goldmünze. Neue Stationen bringen mehr!",
   "welcome_programmieren": "Willkommen auf der Programmierinsel! Hier steuern wir dein Schiff zum Schatz.",
   "prog_ablauf_intro": "Was passiert zuerst, was danach? Tippe die Bilder der Reihe nach an.",
   "prog_ablauf_first": "Was passiert ganz am Anfang?",
