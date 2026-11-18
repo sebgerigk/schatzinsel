@@ -126,7 +126,7 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
 .sky svg { width: 100%; height: 100%; }
 .cloud-a { animation: drift 26s ease-in-out infinite alternate; }
 .cloud-b { animation: drift 34s ease-in-out infinite alternate-reverse; }
-.wave { position: absolute; left: 0; right: 0; bottom: 0; background-repeat: repeat-x, no-repeat; background-size: 200px 40px, auto; animation: waveMove 7s linear infinite; }
+.wave { position: absolute; left: -200px; right: 0; bottom: 0; background-repeat: repeat-x, no-repeat; background-size: 200px 40px, auto; animation: waveMove 7s linear infinite; will-change: transform; }
 .wave-3 { top: 45%; z-index: 2; animation-duration: 11s;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40'%3E%3Cpath d='M0 20 Q25 2 50 20 T100 20 T150 20 T200 20 V40 H0Z' fill='%2349c4d8'/%3E%3Cpath d='M0 20 Q25 2 50 20 T100 20 T150 20 T200 20' fill='none' stroke='%23fff' stroke-opacity='.7' stroke-width='4'/%3E%3C/svg%3E"), linear-gradient(transparent 38px, #49c4d8 38px); }
 .wave-2 { top: 58%; z-index: 4; animation-duration: 8s; animation-direction: reverse;
@@ -157,7 +157,7 @@ html.caps .sentence { font-size: clamp(28px, 5.6vmin, 52px); }
 /* ---------- Schatzkarte ---------- */
 .screen-map { background: radial-gradient(ellipse at 50% 38%, #58d3e2, #22a3c4 62%, #1485ab); }
 .map-sea {
-  position: absolute; inset: 0; opacity: .5; animation: seaDrift 14s linear infinite;
+  position: absolute; inset: 0 0 0 -220px; opacity: .5; animation: seaDrift 14s linear infinite; will-change: transform;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 150'%3E%3Cg fill='none' stroke='%23fff' stroke-width='5' stroke-linecap='round'%3E%3Cpath d='M20 34 q12 -10 24 0 t24 0'/%3E%3Cpath d='M130 108 q12 -10 24 0 t24 0'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 220px 150px;
 }
@@ -790,8 +790,10 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
 @keyframes flapL { to { transform: rotate(44deg); } }
 @keyframes flapR { to { transform: rotate(-44deg); } }
 @keyframes drift { from { transform: translateX(-30px); } to { transform: translateX(50px); } }
-@keyframes waveMove { from { background-position: 0 0, 0 0; } to { background-position: 200px 0, 0 0; } }
-@keyframes seaDrift { to { background-position: 220px 0; } }
+/* Wellen und Meer verschieben die ganze Ebene statt das Hintergrundbild: Das übernimmt der
+   Grafikchip, der Prozessor bleibt frei – sonst kann auf dem iPad die Sprache kurz stocken. */
+@keyframes waveMove { from { transform: translateX(0); } to { transform: translateX(200px); } }
+@keyframes seaDrift { from { transform: translateX(0); } to { transform: translateX(220px); } }
 @keyframes bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-1.2vmin) rotate(2deg); } }
 @keyframes flag { to { transform: skewY(-9deg) scaleX(.9); } }
 @keyframes letterBob { 50% { transform: translateY(-1vmin) rotate(-2deg); } }

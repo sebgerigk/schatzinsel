@@ -6,6 +6,8 @@ let busyUntil = 0; // bis wann (Audio-Zeit) noch ein Soundeffekt klingt
 let index = {};
 let emphasis = {};   // Wort -> je Buchstabe die betonte Fassung (erzeugt von tools/gen-audio.py)
 const buffers = new Map();
+const leads = new Map();   // Clip -> Sekunden Stille am Anfang
+let lastVoiceEnd = -1;     // Audio-Zeit, zu der Koko zuletzt fertig gesprochen hat
 let currentSrc = null;
 let resolveCurrent = null;
 let speakToken = 0;
@@ -22,7 +24,9 @@ export function unlockAudio() {
   if (!ctx) {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
-    ctx = new AC();
+    // „playback": größerer Puffer in der Tonausgabe. Sprache startet dadurch ein paar
+    // Hundertstelsekunden später, stockt aber nicht, wenn das iPad gerade viel zeichnet.
+    try { ctx = new AC({ latencyHint: 'playback' }); } catch { ctx = new AC(); }
     master = ctx.createGain();
     master.gain.value = 0.9;
     master.connect(ctx.destination);
@@ -46,17 +50,38 @@ export function unlockAudio() {
   if (ctx.state !== 'running') ctx.resume().catch(() => {});
 }
 
+const MAX_BUFFERS = 150;   // so viele entpackte Clips höchstens im Speicher (das iPad hat nicht unbegrenzt Platz)
+
 async function loadBuffer(file) {
-  if (buffers.has(file)) return buffers.get(file);
+  if (buffers.has(file)) {
+    const buf = buffers.get(file);
+    buffers.delete(file);      // ans Ende rücken: zuletzt gebraucht
+    buffers.set(file, buf);
+    return buf;
+  }
   const data = await (await fetch('assets/audio/' + file)).arrayBuffer();
   const buf = await new Promise((res, rej) => ctx.decodeAudioData(data, res, rej));
   buffers.set(file, buf);
+  leads.set(buf, leadingSilence(buf));
+  while (buffers.size > MAX_BUFFERS) {
+    const oldest = buffers.keys().next().value;
+    leads.delete(buffers.get(oldest));
+    buffers.delete(oldest);
+  }
   return buf;
+}
+
+/** Wie lange ein Clip mit Stille beginnt (die Clips haben absichtlich etwas Vorlauf). */
+function leadingSilence(buf) {
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) if (Math.abs(d[i]) > 0.01) return i / buf.sampleRate;
+  return 0;
 }
 
 export function stopSpeech() {
   speakToken++;
   if (currentSrc) {
+    lastVoiceEnd = ctx.currentTime;   // unterbrochen: die Tonausgabe ist trotzdem wach
     try { currentSrc.onended = null; currentSrc.stop(); } catch { /* schon beendet */ }
     currentSrc = null;
   }
@@ -71,15 +96,22 @@ function playBuffer(buf) {
     src.connect(voiceGain);
     // Erst sprechen, wenn der Soundeffekt (Klingeln, Fanfare …) ausgeklungen ist.
     const delay = Math.min(0.9, Math.max(0, busyUntil - ctx.currentTime - 0.15));
+    // Spricht Koko gleich im Anschluss weiter, ist die Tonausgabe schon wach: Den Vorlauf
+    // fast ganz überspringen, damit die Sätze fließend ineinander übergehen statt Stück für Stück.
+    const chained = lastVoiceEnd >= 0 && ctx.currentTime - lastVoiceEnd < 1.2;
+    const offset = chained ? Math.max(0, (leads.get(buf) || 0) - 0.06) : 0;
+    let done = false;
     const finish = () => {
-      if (currentSrc === src) { currentSrc = null; resolveCurrent = null; }
+      if (done) return;
+      done = true;
+      if (currentSrc === src) { currentSrc = null; resolveCurrent = null; lastVoiceEnd = ctx.currentTime; }
       res();
     };
     currentSrc = src;
     resolveCurrent = res;
     src.onended = finish;
-    src.start(ctx.currentTime + delay);
-    setTimeout(finish, (delay + buf.duration) * 1000 + 1200); // Sicherheitsnetz
+    src.start(ctx.currentTime + delay, offset);
+    setTimeout(finish, (delay + buf.duration - offset) * 1000 + 1200); // Sicherheitsnetz
   });
 }
 
@@ -126,13 +158,37 @@ export function stressed(word, i) {
   return (list && list[i]) || word;
 }
 
-/** Lädt Clips schon einmal vor, damit sie ohne Verzögerung starten. */
-export function preload(texts) {
+/**
+ * Lädt Clips schon einmal vor, damit sie ohne Verzögerung starten.
+ * stressed: bei Wörtern auch die betonten Fassungen für Fehler beim Schreiben.
+ */
+export function preload(texts, { stressed: withStress = false } = {}) {
   if (!ctx) return;
+  const all = [];
   for (const t of texts) {
-    const file = index[t];
-    if (file && !buffers.has(file)) loadBuffer(file).catch(() => {});
+    if (typeof t !== 'string') continue;
+    all.push(t);
+    if (withStress && emphasis[t]) all.push(...new Set(emphasis[t]));
   }
+  // Die neue Anfrage kommt zuerst dran (sie gehört zum aktuellen Bildschirm), in ihrer Reihenfolge.
+  const files = [...new Set(all.map(t => index[t]).filter(f => f && !buffers.has(f)))];
+  const rest = queue.filter(f => !files.includes(f));
+  queue.length = 0;
+  // Mehr als in den Speicher passt, lohnt nicht – es würde gleich wieder verdrängt.
+  queue.push(...[...files, ...rest].slice(0, MAX_BUFFERS / 2));
+  if (!queueBusy) drainQueue();
+}
+
+// Vorladen geschieht nacheinander im Hintergrund, damit Kokos nächster Satz nicht warten muss.
+const queue = [];
+let queueBusy = false;
+async function drainQueue() {
+  queueBusy = true;
+  while (queue.length) {
+    const file = queue.shift();
+    if (!buffers.has(file)) await loadBuffer(file).catch(() => {});
+  }
+  queueBusy = false;
 }
 
 function tone(freq, start, dur, type = 'sine', gain = 0.2, slideTo = null) {

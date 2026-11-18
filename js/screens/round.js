@@ -2,7 +2,7 @@
 import { register, go } from '../engine/router.js';
 import { awardStation, getState } from '../engine/storage.js';
 import { P } from '../engine/content.js';
-import { sfx } from '../engine/audio.js';
+import { sfx, preload } from '../engine/audio.js';
 import { h, pick, wait, withTimeout, shake, burst, confetti } from '../engine/util.js';
 import { ISLANDS } from '../content/stations.js';
 import { rechnen } from '../games/rechnen.js';
@@ -17,11 +17,21 @@ import { ICON, coinSvg, starSvg } from '../art/icons.js';
 
 const GAMES = { rechnen, lesen, schreiben, programmieren, denken };
 
+/** Alle Texte in den Aufgaben (Wörter, Sätze, Geschichten). preload() nimmt nur die mit Clip. */
+function textsIn(value, out = [], depth = 0) {
+  if (typeof value === 'string') out.push(value);
+  else if (value && typeof value === 'object' && depth < 4) Object.values(value).forEach(v => textsIn(v, out, depth + 1));
+  return out;
+}
+
 register('round', (el, { island, idx }) => {
   const isl = ISLANDS[island];
   const station = isl.stations[idx];
   const game = GAMES[station.game];
   const tasks = game.makeTasks(station.opts);
+  // Alles, was Koko in dieser Runde sagen könnte, schon jetzt laden – dann gibt es
+  // zwischen den Sätzen keine ungleichen Pausen, weil ein Clip erst noch geladen werden muss.
+  preload(textsIn(tasks), { stressed: station.game === 'schreiben' });
   let i = 0;
   let firstTry = 0;
   let allBest = true;   // Kompass-Medaille: jede Aufgabe mit der kürzesten Lösung
