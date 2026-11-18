@@ -60,9 +60,13 @@ const SHIP_EXTRAS = {
     <path d="M214 160 V187 M206 169 H222 M203 180 Q205 191 214 191 Q223 191 225 180" fill="none" stroke="#c5ccd6" stroke-width="3"/>`,
   schatz: () => `<path d="M188 138 Q188 124 201 124 Q214 124 214 138Z" fill="#b97a45" stroke-width="3"/>
     <rect x="188" y="136" width="26" height="14" rx="2" fill="#a3642f" stroke-width="3"/><rect x="197.5" y="132" width="7" height="8" rx="1.5" fill="${GOLD}" stroke-width="2"/>`,
-  steuerrad: () => `<g transform="translate(108 136)" stroke-width="2.5">
-    <path d="M0 -14 V14 M-14 0 H14 M-10 -10 L10 10 M10 -10 L-10 10" stroke-width="3.5"/><path d="M0 -14 V14 M-14 0 H14 M-10 -10 L10 10 M10 -10 L-10 10" stroke="${WOOD}" stroke-width="1.5"/>
-    <circle r="10" fill="none" stroke-width="6"/><circle r="10" fill="none" stroke="${WOOD}" stroke-width="3"/><circle r="3.5" fill="${GOLD}"/></g>`,
+  // Ehren-Schatz der Programmierinsel: großes Steuerrad auf einem Pfosten
+  steuerrad: () => `<rect x="103" y="124" width="10" height="27" rx="2" fill="${WOOD2}" stroke-width="3"/>
+    <g transform="translate(108 122)">
+    ${[0, 45, 90, 135].map(a => `<g transform="rotate(${a})"><path d="M0 -22 V22" stroke-width="7"/><path d="M0 -22 V22" stroke="${WOOD}" stroke-width="3"/>
+      <circle cy="-22" r="3.6" fill="${WOOD}" stroke-width="2.5"/><circle cy="22" r="3.6" fill="${WOOD}" stroke-width="2.5"/></g>`).join('')}
+    <circle r="15" fill="none" stroke-width="9"/><circle r="15" fill="none" stroke="${WOOD}" stroke-width="5"/>
+    <circle r="15" fill="none" stroke="${GOLD}" stroke-width="1.6"/><circle r="5.5" fill="${GOLD}" stroke-width="2.5"/></g>`,
   koko: () => `<g transform="translate(84 124)" stroke-width="2.5">
     <ellipse cx="0" cy="15" rx="9.5" ry="12" fill="#ea4630"/><path d="M-9 12 Q-17 20 -11 28Z" fill="#2f86d8"/>
     <circle cx="0" cy="0" r="10" fill="#ea4630"/>
@@ -103,11 +107,28 @@ const TREASURES = {
   moewe: () => `<g class="pet"><path d="M62 46 Q70 36 80 44" fill="#fff" stroke-width="3"/><ellipse cx="72" cy="44" rx="9" ry="6" fill="#fff" stroke-width="3"/>
     <circle cx="78" cy="39" r="4.5" fill="#fff" stroke-width="2.5"/><path d="M82 39 L88 40 L82 42Z" fill="${GOLD}" stroke-width="1.8"/>
     <circle cx="79" cy="38" r="1" fill="${INK}" stroke="none"/><path d="M70 50 V53 M74 50 V53" stroke="${GOLD2}" stroke-width="2"/></g>`,
-  nordstern: () => `<circle cx="133" cy="9" r="13" fill="#fff3a8" stroke="none" opacity=".75" class="twinkle"/>
-    <polygon points="${starPoints(133, 9, 9, 3.6, 4)}" fill="#fff" stroke-width="2.5"/>`,
-  kompassrose: () => `<g transform="translate(56 178)"><circle r="11" fill="#fdf1cf" stroke-width="3"/>
-    <path d="M0 -9 L3 0 L0 9 L-3 0Z" fill="#f0553f" stroke-width="2"/><path d="M-9 0 L0 3 L9 0 L0 -3Z" fill="#2f86d8" stroke-width="2"/></g>`,
-  perlenreling: () => Array.from({ length: 16 }, (_, i) => `<circle cx="${34 + i * 13.4}" cy="150" r="3.6" fill="#fffaf0" stroke-width="1.6"/>`).join(''),
+  // Ehren-Schätze: gut sichtbar, weil sie etwas Besonderes sind
+  nordstern: () => `<circle cx="236" cy="30" r="25" fill="#fff3a8" stroke="none" opacity=".7" class="twinkle"/>
+    <polygon points="${starPoints(236, 30, 20, 5.5, 4)}" fill="#fffbe0" stroke-width="3"/>
+    <polygon points="${starPoints(236, 30, 9, 3, 4)}" transform="rotate(45 236 30)" fill="${GOLD}" stroke="none"/>
+    <polygon class="twinkle t2" points="${starPoints(212, 52, 5, 2, 4)}" fill="#fff" stroke="none"/>`,
+  kompassrose: () => `<g transform="translate(68 180)"><circle r="17" fill="${GOLD}" stroke-width="3"/><circle r="13" fill="#fdf1cf" stroke-width="2"/>
+    <g transform="rotate(45)"><path d="M0 -11 L2.6 0 L0 11 L-2.6 0Z M-11 0 L0 2.6 L11 0 L0 -2.6Z" fill="${GOLD2}" stroke-width="1.8"/></g>
+    <path d="M0 -15 L4 0 L0 15 L-4 0Z" fill="#f0553f" stroke-width="2"/><path d="M0 0 L4 0 L0 15 L-4 0Z" fill="#fdf1cf" stroke-width="2"/>
+    <path d="M-15 0 L0 4 L15 0 L0 -4Z" fill="#2f86d8" stroke-width="2"/><circle r="2.6" fill="${GOLD}" stroke-width="1.6"/></g>`,
+  // Perlenketten, die in Bögen vom Rand herabhängen, mit Goldperlen an den Aufhängepunkten
+  perlenreling: () => {
+    const hooks = [34, 84, 134, 184, 234];
+    let out = '';
+    for (let k = 0; k < hooks.length - 1; k++) {
+      const a = hooks[k], b = hooks[k + 1];
+      for (let i = 1; i < 9; i++) {
+        const t = i / 9;
+        out += `<circle cx="${a + (b - a) * t}" cy="${(153 + 15 * 4 * t * (1 - t)).toFixed(1)}" r="4.2" fill="#fffaf0" stroke-width="1.6"/>`;
+      }
+    }
+    return out + hooks.map(x => `<circle cx="${x}" cy="153" r="5.6" fill="${GOLD}" stroke-width="2"/>`).join('');
+  },
 };
 const STAR_SAIL = [[96, 72], [118, 102], [146, 70], [170, 98], [104, 118], [176, 70], [140, 116]];
 
@@ -140,9 +161,13 @@ export function shipSvg(cfg) {
     ${has('zweimaster') ? TREASURES.zweimaster(sailStyle.rainbow ? `url(#rb${n})` : sailStyle.base, sailStyle.stripe) : ''}
     <rect x="128" y="16" width="10" height="142" rx="4" fill="${WOOD2}"/>
     ${extras.includes('ausguck') ? SHIP_EXTRAS.ausguck() : ''}
-    <path class="ship-flag" d="M138 18 Q157 7 178 20 Q158 31 138 37Z" fill="${flag === 'rainbow' ? `url(#rb${n})` : flag}"/>
+    ${has('weltflagge')
+    ? `<path class="ship-flag" d="M138 14 Q168 0 200 16 Q170 32 138 44Z" fill="${flag}"/>
+      <circle cx="164" cy="24" r="11" fill="#7cc8f0" stroke-width="2.5"/>
+      <path d="M156 18 q5 -4 9 0 q-2 5 -7 4Z M164 27 q5 -3 8 1 q-3 5 -6 4Z" fill="${G1}" stroke="${G2}" stroke-width="1.5"/>
+      <path d="M153 24 H175 M164 13 Q158 24 164 35 M164 13 Q170 24 164 35" fill="none" stroke="#fff" stroke-width="1" opacity=".7"/>`
+    : `<path class="ship-flag" d="M138 18 Q157 7 178 20 Q158 31 138 37Z" fill="${flag === 'rainbow' ? `url(#rb${n})` : flag}"/>`}
     ${c.flagge === 'stern' && !has('weltflagge') ? `<polygon points="${starPoints(154, 22, 6, 2.6)}" fill="${GOLD}" stroke="none"/>` : ''}
-    ${has('weltflagge') ? `<circle cx="155" cy="22" r="7" fill="${G1}" stroke-width="2"/><path d="M150 19 q4 -3 7 0 M153 25 q3 2 6 -1" fill="none" stroke="${G2}" stroke-width="2"/>` : ''}
     <path d="${sail}" fill="${sailStyle.rainbow ? `url(#rb${n})` : sailStyle.base}"/>
     ${stripes}${emblem}
     ${has('sternensegel') ? STAR_SAIL.map(([x, y], i) => `<polygon class="twinkle${i % 2 ? ' t2' : ''}" points="${starPoints(x, y, 7, 3)}" fill="${GOLD}" stroke="none"/>`).join('') : ''}

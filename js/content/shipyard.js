@@ -1,5 +1,9 @@
 // Die Werft: was es für das Schiff zu kaufen gibt. Preise in Goldmünzen.
 // Eine Runde an einer Station bringt 1 bis 3 Münzen.
+// Teile, die früher bei den Schätzen standen: wer sie dort gekauft hat, behält sie
+// (Spielstand-Umzug in js/engine/storage.js) und bekommt den Preisunterschied zurück.
+export const MOVED_TO_EXTRAS = { moewe: 40, rettungsboot: 50, katze: 60, aeffchen: 60, schildkroete: 60 };
+
 export const SHIPYARD = [
   {
     cat: 'segel', title: 'Segel',
@@ -47,8 +51,13 @@ export const SHIPYARD = [
       { id: 'laterne', name: 'Laterne', price: 6 },
       { id: 'anker', name: 'Anker', price: 8 },
       { id: 'ausguck', name: 'Ausguck', price: 10 },
+      { id: 'moewe', name: 'Möwe', price: 12 },
+      { id: 'schildkroete', name: 'Schildkröte', price: 12 },
       { id: 'wimpel', name: 'Wimpel', price: 12 },
+      { id: 'rettungsboot', name: 'Rettungsboot', price: 14 },
       { id: 'schatz', name: 'Schatzkiste', price: 15 },
+      { id: 'katze', name: 'Schiffskatze', price: 18 },
+      { id: 'aeffchen', name: 'Äffchen', price: 18 },
       { id: 'koko', name: 'Koko an Bord', price: 20 },
     ],
   },
@@ -57,12 +66,7 @@ export const SHIPYARD = [
     // needs: Leistung aus js/content/schaetze.js, die zusätzlich zu den Münzen nötig ist.
     cat: 'schaetze', title: 'Schätze', multi: true, special: true,
     items: [
-      // Am Schiff
-      { id: 'moewe', name: 'Möwe', price: 40 },
-      { id: 'rettungsboot', name: 'Rettungsboot', price: 50 },
-      { id: 'katze', name: 'Schiffskatze', price: 60 },
-      { id: 'aeffchen', name: 'Äffchen', price: 60 },
-      { id: 'schildkroete', name: 'Schildkröte', price: 60 },
+      // Am Schiff (kleine Tiere und Teile stehen bei den Extras – Schätze sollen deutlich zu sehen sein)
       { id: 'drache', name: 'Drachenkopf', price: 70 },
       { id: 'konfetti', name: 'Konfettikanone', price: 70 },
       { id: 'sternensegel', name: 'Sternensegel', price: 80 },
