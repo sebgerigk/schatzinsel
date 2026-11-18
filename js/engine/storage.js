@@ -1,7 +1,7 @@
 // Spielstand – liegt ausschließlich lokal auf dem Gerät.
 // Er wird doppelt gesichert: in localStorage und in einer IndexedDB. Beim Start gilt die neuere Fassung.
 // So geht nichts verloren, wenn das Gerät einen der beiden Speicher leert oder nicht rechtzeitig schreibt.
-import { SHIPYARD, MOVED_TO_EXTRAS } from '../content/shipyard.js';
+import { SHIPYARD, MOVED_FROM_SCHAETZE } from '../content/shipyard.js';
 
 const KEY = 'schatzinsel.v1';
 const DB_NAME = 'schatzinsel';
@@ -101,18 +101,24 @@ export async function initStorage() {
 
 /**
  * Bringt ältere Spielstände auf den neuesten Stand. Darf beliebig oft laufen.
- * Teile, die von den Schätzen zu den Extras umgezogen sind, bleiben gekauft;
- * der Preisunterschied kommt als Münzen zurück.
+ * Teile, die von den Schätzen in eine andere Kategorie umgezogen sind, bleiben gekauft;
+ * der Preisunterschied kommt als Münzen zurück. Was angebaut war, bleibt angebaut –
+ * in Kategorien mit nur einem Teil (z. B. Bug) ersetzt es das bisherige.
  */
 function migrate(st) {
   const owned = st.owned || {};
-  const extras = SHIPYARD.find(c => c.cat === 'extras').items;
-  for (const [id, oldPrice] of Object.entries(MOVED_TO_EXTRAS)) {
+  st.ship = { ...defaults().ship, ...(st.ship || {}) };
+  for (const [id, { price: oldPrice, to }] of Object.entries(MOVED_FROM_SCHAETZE)) {
     if (!owned['schaetze:' + id]) continue;
     delete owned['schaetze:' + id];
-    if (owned['extras:' + id]) continue;
-    owned['extras:' + id] = true;
-    st.coins += Math.max(0, oldPrice - extras.find(x => x.id === id).price);
+    const cat = SHIPYARD.find(c => c.cat === to);
+    if (!cat.multi && (st.ship.extras || []).includes(id)) {
+      st.ship.extras = st.ship.extras.filter(x => x !== id);
+      st.ship[to] = id;
+    }
+    if (owned[to + ':' + id]) continue;
+    owned[to + ':' + id] = true;
+    st.coins += Math.max(0, oldPrice - cat.items.find(x => x.id === id).price);
   }
   st.owned = owned;
 }

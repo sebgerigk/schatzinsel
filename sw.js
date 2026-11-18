@@ -1,7 +1,7 @@
 // Service Worker: macht die Schatzinsel offline nutzbar.
 // Strategie: alles aus dem Cache beantworten und im Hintergrund auffrischen –
 // so startet die App sofort und holt sich Updates beim nächsten Öffnen mit Netz.
-const CACHE = 'schatzinsel-v8';
+const CACHE = 'schatzinsel-v9';
 
 const CORE = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',

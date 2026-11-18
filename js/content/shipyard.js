@@ -1,8 +1,13 @@
 // Die Werft: was es für das Schiff zu kaufen gibt. Preise in Goldmünzen.
 // Eine Runde an einer Station bringt 1 bis 3 Münzen.
-// Teile, die früher bei den Schätzen standen: wer sie dort gekauft hat, behält sie
-// (Spielstand-Umzug in js/engine/storage.js) und bekommt den Preisunterschied zurück.
-export const MOVED_TO_EXTRAS = { moewe: 40, rettungsboot: 50, katze: 60, aeffchen: 60, schildkroete: 60 };
+// Teile, die früher bei den Schätzen standen: alter Preis und neue Kategorie.
+// Wer sie dort gekauft hat, behält sie (Spielstand-Umzug in js/engine/storage.js)
+// und bekommt den Preisunterschied zurück.
+export const MOVED_FROM_SCHAETZE = {
+  moewe: { price: 40, to: 'extras' }, rettungsboot: { price: 50, to: 'extras' }, katze: { price: 60, to: 'extras' },
+  aeffchen: { price: 60, to: 'extras' }, schildkroete: { price: 60, to: 'extras' },
+  konfetti: { price: 70, to: 'extras' }, drache: { price: 70, to: 'figur' },
+};
 
 export const SHIPYARD = [
   {
@@ -42,6 +47,7 @@ export const SHIPYARD = [
       { id: 'keine', name: 'Ohne', price: 0 },
       { id: 'stern', name: 'Goldstern', price: 8 },
       { id: 'fisch', name: 'Fisch', price: 12 },
+      { id: 'drache', name: 'Drachenkopf', price: 20 },
     ],
   },
   {
@@ -59,6 +65,8 @@ export const SHIPYARD = [
       { id: 'katze', name: 'Schiffskatze', price: 18 },
       { id: 'aeffchen', name: 'Äffchen', price: 18 },
       { id: 'koko', name: 'Koko an Bord', price: 20 },
+      // feuert nach einer Runde mit Münzen Konfetti über die Schatzkarte
+      { id: 'konfetti', name: 'Konfettikanone', price: 22 },
     ],
   },
   {
@@ -67,8 +75,6 @@ export const SHIPYARD = [
     cat: 'schaetze', title: 'Schätze', multi: true, special: true,
     items: [
       // Am Schiff (kleine Tiere und Teile stehen bei den Extras – Schätze sollen deutlich zu sehen sein)
-      { id: 'drache', name: 'Drachenkopf', price: 70 },
-      { id: 'konfetti', name: 'Konfettikanone', price: 70 },
       { id: 'sternensegel', name: 'Sternensegel', price: 80 },
       { id: 'zweimaster', name: 'Zweimaster', price: 100 },
       // Auf der Schatzkarte

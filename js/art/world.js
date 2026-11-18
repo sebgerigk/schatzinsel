@@ -134,6 +134,7 @@ const STAR_SAIL = [[96, 72], [118, 102], [146, 70], [170, 98], [104, 118], [176,
 
 const SHIP_FIGURES = {
   keine: () => '',
+  drache: () => TREASURES.drache(),
   stern: () => `<polygon points="${starPoints(263, 134, 12, 5.2)}" fill="${GOLD}" stroke-width="3"/>`,
   fisch: () => `<path d="M236 160 L227 153 V167Z" fill="#f08a2c" stroke-width="3"/>
     <path d="M236 160 Q250 148 266 160 Q250 172 236 160Z" fill="#ff9f43" stroke-width="3"/><circle cx="257" cy="158" r="1.8" fill="${INK}" stroke="none"/>`,
@@ -183,7 +184,7 @@ export function shipSvg(cfg) {
     <path d="M26 150 H240" stroke-width="11"/>
     <path d="M26 150 H240" stroke="${hull.rail}" stroke-width="4.5"/>
     <g fill="#9fdcf0"><circle cx="92" cy="187" r="8"/><circle cx="134" cy="187" r="8"/><circle cx="176" cy="187" r="8"/></g>
-    ${has('drache') ? TREASURES.drache() : (SHIP_FIGURES[c.figur] || SHIP_FIGURES.keine)()}
+    ${(SHIP_FIGURES[c.figur] || SHIP_FIGURES.keine)()}
     ${has('perlenreling') ? TREASURES.perlenreling() : ''}
     ${has('kompassrose') ? TREASURES.kompassrose() : ''}
     ${['laterne', 'wimpel', 'anker', 'schatz', 'steuerrad', 'koko'].filter(e => extras.includes(e)).map(e => SHIP_EXTRAS[e]()).join('')}
