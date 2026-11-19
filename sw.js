@@ -1,13 +1,13 @@
 // Service Worker: macht die Schatzinsel offline nutzbar.
 // Strategie: alles aus dem Cache beantworten und im Hintergrund auffrischen –
 // so startet die App sofort und holt sich Updates beim nächsten Öffnen mit Netz.
-const CACHE = 'schatzinsel-v10';
+const CACHE = 'schatzinsel-v11';
 
 const CORE = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',
   'js/app.js',
   'js/engine/util.js', 'js/engine/storage.js', 'js/engine/content.js', 'js/engine/audio.js', 'js/engine/router.js', 'js/engine/playtime.js',
-  'js/art/koko.js', 'js/art/icons.js', 'js/art/world.js', 'js/art/pictures.js', 'js/art/sea.js', 'js/art/denkbilder.js', 'js/art/bildfolgen.js','js/art/schaetze.js', 'js/content/schaetze.js',
+  'js/art/koko.js', 'js/art/shade.js', 'js/art/icons.js', 'js/art/world.js', 'js/art/pictures.js', 'js/art/sea.js', 'js/art/denkbilder.js', 'js/art/bildfolgen.js','js/art/schaetze.js', 'js/content/schaetze.js',
   'js/content/stations.js', 'js/content/strokes.js', 'js/content/shipyard.js',
   'js/games/rechnen.js', 'js/games/lesen.js', 'js/games/schreiben.js', 'js/games/build.js',
   'js/games/seekarte.js', 'js/games/seekarte-ui.js', 'js/games/programmieren.js', 'js/games/denken.js',

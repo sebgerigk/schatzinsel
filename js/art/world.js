@@ -322,7 +322,25 @@ export function compassSvg() {
   </g></svg>`;
 }
 
-const cloud = (x, y, s) => `<path transform="translate(${x} ${y}) scale(${s})" d="M4 40 Q-12 40 -8 24 Q-6 10 12 12 Q18 -8 42 -4 Q60 -18 78 0 Q104 -4 104 20 Q116 34 98 40Z" fill="#fff"/>`;
+const cloud = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M4 40 Q-12 40 -8 24 Q-6 10 12 12 Q18 -8 42 -4 Q60 -18 78 0 Q104 -4 104 20 Q116 34 98 40Z" fill="#fff"/>
+  <path d="M-4 36 Q20 28 50 33 Q80 28 104 36 Q104 42 96 42 H6 Q-6 42 -4 36Z" fill="#dceefa"/></g>`;
+
+/** Sonne mit weichem Schein und langsam drehenden Strahlen. */
+function sun(cx, cy, r) {
+  const rays = Array.from({ length: 12 }, (_, k) => {
+    const a = k * 30 * Math.PI / 180;
+    const p = (rr, d) => `${(cx + Math.cos(a + d) * rr).toFixed(0)} ${(cy + Math.sin(a + d) * rr).toFixed(0)}`;
+    return `<path d="M${p(r * 1.3, -0.1)} L${p(r * 2, 0)} L${p(r * 1.3, 0.1)}Z"/>`;
+  }).join('');
+  return `<circle cx="${cx}" cy="${cy}" r="${r * 2.4}" fill="#fff3a8" opacity=".35"/>
+    <g class="sun-rays" fill="#ffe27a">${rays}</g>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#ffd23f" stroke="${INK}" stroke-width="4"/>
+    <path d="M${cx - r * .6} ${cy - r * .3} Q${cx - r * .3} ${cy - r * .75} ${cx + r * .2} ${cy - r * .72}" fill="none" stroke="#fff3a6" stroke-width="${(r * .12).toFixed(1)}" stroke-linecap="round"/>`;
+}
+
+/** Ein paar Möwen am Himmel. */
+const gulls = (x, y) => `<g class="gulls" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round" opacity=".55">
+  <path d="M${x} ${y} q10 -10 20 0 q10 -10 20 0"/><path d="M${x + 60} ${y - 30} q7 -7 14 0 q7 -7 14 0"/></g>`;
 
 /** Strand-Hintergrund für den Stationen-Bildschirm. */
 export function sceneSvg() {
@@ -333,8 +351,7 @@ export function sceneSvg() {
     <linearGradient id="sandG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fce9a8"/><stop offset="1" stop-color="#f0c770"/></linearGradient>
   </defs>
   <rect width="1024" height="240" fill="url(#skyG)"/>
-  <circle cx="850" cy="92" r="70" fill="#fff3a8" opacity=".55"/>
-  <circle cx="850" cy="92" r="44" fill="#ffd23f"/>
+  ${sun(850, 92, 44)}${gulls(640, 80)}
   <g class="clouds" opacity=".95">
     <g class="cloud-a">${cloud(150, 96, 1.2)}</g>
     <g class="cloud-b">${cloud(520, 108, 0.9)}</g>
@@ -375,13 +392,31 @@ export function sceneSvg() {
 /** Himmel mit Sonne und Wolken für Titel- und Spielbildschirm. */
 export function skySvg() {
   return `<svg class="sky-svg" viewBox="0 0 1024 500" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
-    <circle cx="925" cy="200" r="80" fill="#fff3a8" opacity=".55"/>
-    <circle cx="925" cy="200" r="50" fill="#ffd23f"/>
+    ${sun(925, 200, 40)}${gulls(330, 150)}
     <g opacity=".95">
       <g class="cloud-a">${cloud(90, 70, 1.4)}</g>
       <g class="cloud-b">${cloud(470, 40, 1)}</g>
       <g class="cloud-a">${cloud(640, 210, 1.2)}</g>
       <g class="cloud-b">${cloud(240, 230, 0.8)}</g>
     </g>
+  </svg>`;
+}
+
+/**
+ * Meer am Horizont hinter der Reling, mit der Insel, zu der die Runde gehört (für die Runden).
+ * Zeichenfläche 1600 × 300, unten bündig mit dem Deck.
+ */
+export function horizonSvg(kind) {
+  // klein und weit weg am rechten Rand, damit sie neben keiner Aufgabe stört
+  const isle = islandSvg(kind).replace('<svg class="island-svg"', '<svg x="1410" y="38" width="180" height="139"');
+  return `<svg class="horizon-svg" viewBox="0 0 1600 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs><linearGradient id="horizonSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2bb0cf"/><stop offset="1" stop-color="#7fe0ea"/></linearGradient></defs>
+    <rect y="150" width="1600" height="150" fill="url(#horizonSea)"/>
+    <path d="M0 150 H1600" stroke="#bdeefa" stroke-width="4"/>
+    <path d="M120 152 Q170 118 230 152Z" fill="#74cf93" opacity=".8"/>
+    <g class="sea-lines" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55">
+      <path d="M60 196 q14 -10 28 0 t28 0"/><path d="M420 184 q14 -10 28 0 t28 0 t28 0"/><path d="M820 210 q14 -10 28 0 t28 0"/>
+      <path d="M1080 186 q14 -10 28 0 t28 0"/><path d="M260 250 q14 -10 28 0 t28 0"/><path d="M640 262 q14 -10 28 0 t28 0 t28 0"/></g>
+    ${isle}
   </svg>`;
 }

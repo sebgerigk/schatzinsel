@@ -4,6 +4,7 @@ import { startPlaytime, setScreen, timeIsUp } from './engine/playtime.js';
 import { loadContent } from './engine/content.js';
 import { initAudio } from './engine/audio.js';
 import { applySettings, requestPersistence, initStorage } from './engine/storage.js';
+import { startShading } from './art/shade.js';
 import './screens/title.js';
 import './screens/map.js';
 import './screens/island.js';
@@ -15,6 +16,7 @@ import './screens/gallery.js';
 import './screens/kartentisch.js';
 
 async function boot() {
+  startShading(document.getElementById('app'));
   requestPersistence();
   await Promise.all([loadContent(), initAudio(), initStorage()]);
   applySettings();

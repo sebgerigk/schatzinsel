@@ -12,7 +12,7 @@ import { programmieren } from '../games/programmieren.js';
 import { denken } from '../games/denken.js';
 import { medalSvg } from '../art/sea.js';
 import { createKoko } from '../art/koko.js';
-import { skySvg, chestSvg } from '../art/world.js';
+import { skySvg, chestSvg, horizonSvg } from '../art/world.js';
 import { ICON, coinSvg, starSvg } from '../art/icons.js';
 
 const GAMES = { rechnen, lesen, schreiben, programmieren, denken };
@@ -40,6 +40,8 @@ register('round', (el, { island, idx }) => {
 
   el.innerHTML = `
     <div class="sky">${skySvg()}</div>
+    <div class="horizon">${horizonSvg(island)}</div>
+    <div class="rail"></div>
     <div class="deck"></div>
     <header class="round-top">
       <button class="round-btn back" aria-label="Zurück zur Insel">${ICON.back}</button>

@@ -13,6 +13,7 @@ export function kokoSvg() {
       <path d="M114 196 Q128 228 130 248 Q112 238 104 210Z" fill="${B}"/>
       <path d="M93 198 Q94 234 100 250 Q106 234 107 198Z" fill="${Y}"/>
     </g>
+    <ellipse cx="100" cy="234" rx="70" ry="7" fill="#3b2a20" opacity=".16" stroke="none"/>
     <rect x="30" y="212" width="140" height="15" rx="7.5" fill="#b0703f"/>
     <path d="M44 219 H70 M120 219 H150" stroke="#8a5530" stroke-width="3"/>
     <g class="koko-body">
@@ -25,6 +26,7 @@ export function kokoSvg() {
         <path d="M160 176 Q154 184 156 196 M150 170 Q143 180 144 192" stroke="${B2}" stroke-width="3" fill="none"/>
       </g>
       <ellipse cx="100" cy="164" rx="45" ry="53" fill="${R}"/>
+      <path d="M66 140 Q70 122 84 116" fill="none" stroke="#ff8f7d" stroke-width="6"/>
       <ellipse cx="100" cy="178" rx="27" ry="31" fill="${BELLY}" stroke="none"/>
       <path d="M88 168 q5 5 10 0 M102 168 q5 5 10 0 M95 182 q5 5 10 0" stroke="${R}" stroke-width="3" fill="none"/>
       <g fill="${Y2}">
@@ -33,6 +35,7 @@ export function kokoSvg() {
       </g>
       <g class="koko-head">
         <circle cx="100" cy="90" r="50" fill="${R}"/>
+        <path d="M60 70 Q72 48 98 44" fill="none" stroke="#ff8f7d" stroke-width="7"/>
         <ellipse cx="77" cy="94" rx="23" ry="25" fill="${CREAM}" stroke="none"/>
         <ellipse cx="123" cy="94" rx="23" ry="25" fill="${CREAM}" stroke="none"/>
         <g class="koko-eye">
