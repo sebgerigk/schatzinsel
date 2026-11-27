@@ -585,18 +585,23 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
 .prog-bar { flex: none; display: flex; align-items: center; justify-content: center; gap: 2vmin; max-width: 100%; }
 .plan { position: relative; min-width: 0; }
 .plan-slots {
-  display: flex; align-items: center; gap: 1vmin; padding: 1.1vmin 1.4vmin; min-height: 12vmin; border-radius: 2.2vmin; border: 4px solid var(--ink);
+  --pt: 8.6vmin;   /* Größe der Plättchen in der Leiste – wird bei vielen Plätzen kleiner, damit alles aufs iPad passt */
+  display: flex; align-items: center; gap: 1vmin; padding: 1.1vmin 1.4vmin; min-height: calc(var(--pt) + 3.4vmin); border-radius: 2.2vmin; border: 4px solid var(--ink);
   background: repeating-linear-gradient(90deg, #b97a45 0 12vmin, #a8693a 12vmin calc(12vmin + 3px)); box-shadow: 0 .8vmin 0 rgba(59, 42, 32, .3);
 }
+.plan-slots:has(> :nth-child(11)) { --pt: 7.6vmin; }
+.plan-slots:has(> :nth-child(12)) { --pt: 7vmin; }
+.plan-slots:has(> :nth-child(13)) { --pt: 6.4vmin; }
 .plan.locked .plan-slots { filter: saturate(.85); }
 .plan.locked .pslot.next, .plan.locked .ploop.open .pslot.inner { animation: none; }
-.pslot { flex: none; width: 8.6vmin; height: 8.6vmin; border-radius: 1.8vmin; border: 3px dashed #f3d9a8; background: rgba(255, 255, 255, .18); }
+.plan-slots > .ptile { width: var(--pt); height: var(--pt); }
+.pslot { flex: none; width: var(--pt); height: var(--pt); border-radius: 1.8vmin; border: 3px dashed #f3d9a8; background: rgba(255, 255, 255, .18); }
 .pslot.next { border-color: #fff3a8; background: rgba(255, 255, 255, .35); animation: pulse 1.4s ease-in-out infinite; }
 .ploop { flex: none; display: flex; align-items: center; gap: .7vmin; padding: .5vmin .8vmin .5vmin .4vmin; border: 4px solid var(--ink); border-radius: 2.4vmin; background: #f6e2b8; }
 .ploop.open { border-style: dashed; background: #fff3d2; }
 .ploop .swirl-svg { width: 5vmin; height: 5vmin; }
 .ploop-body { display: flex; gap: .6vmin; }
-.ploop .ptile, .pslot.inner { width: 7.4vmin; height: 7.4vmin; }
+.ploop .ptile, .pslot.inner { width: calc(var(--pt) * .86); height: calc(var(--pt) * .86); }
 .pslot.inner { border-color: #c9a66b; background: rgba(255, 255, 255, .7); }
 .ploop.open .pslot.inner:first-of-type { border-color: var(--coral); animation: pulse 1.4s ease-in-out infinite; }
 .loop-badge { display: flex; flex-direction: column; align-items: center; gap: .3vmin; min-width: 6vmin; padding: .4vmin .7vmin; background: var(--gold); border: 3px solid var(--ink); border-radius: 1.4vmin; font-weight: 900; font-size: 4.2vmin; line-height: 1; cursor: pointer; transition: transform .1s; }
@@ -665,9 +670,9 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
 .sack { width: 14vmin; transition: transform .25s; }
 .sack.on-scale { transform: translateY(-1.6vmin); }
 .sack-svg { width: 100%; overflow: visible; }
-.gap { flex: none; align-self: center; width: 8.4vmin; height: 8.4vmin; display: grid; place-items: center; border-radius: 50%; background: var(--cream); border: 3px solid var(--ink); box-shadow: 0 .6vmin 0 var(--ink); }
-.gap .op-svg { width: 70%; height: 70%; }
-.gap.swap { background: var(--gold); animation: pulse 1.2s ease-in-out infinite; }
+.weigh-gap { flex: none; align-self: center; width: 8.4vmin; height: 8.4vmin; display: grid; place-items: center; border-radius: 50%; background: var(--cream); border: 3px solid var(--ink); box-shadow: 0 .6vmin 0 var(--ink); }
+.weigh-gap .op-svg { width: 70%; height: 70%; }
+.weigh-gap.swap { background: var(--gold); animation: pulse 1.2s ease-in-out infinite; }
 .waage-ok { padding: .3em 1.1em; }
 
 /* Inselweg und Ergebnis */
@@ -842,8 +847,10 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
 /* ---------- Hochformat ---------- */
 @media (orientation: portrait) {
   .islands { flex-wrap: wrap; align-content: center; inset: 14vmin 2vw 30vmin; gap: 2vmin 0; }
-  .island { width: 46vw; }
-  .island:nth-child(2) { margin-top: 0; }
+  .island, .islands.n4 .island { width: 46vw; }
+  .island:nth-child(2), .islands.n4 .island:nth-child(4) { margin-top: 0; }
+  .islands.n4 .ribbon { font-size: clamp(15px, 3.6vmin, 30px); }
+  .islands.n4 .isl-stars { font-size: clamp(14px, 2.8vmin, 24px); }
   .map-route { display: none; }
   .map-ship { left: auto; right: 3vmin; bottom: 21vmin; width: 22vmin; }
   .werft-ship { left: 50%; top: 13vmin; width: 44vmin; }
@@ -858,6 +865,21 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
   .slot-l { width: 8.4vmin; height: 10.4vmin; font-size: 7vmin; }
   .kb-key { width: 8vmin; height: 8.6vmin; }
   .bubble { max-width: 62vw; }
+  /* Programmierinsel und Kartentisch: Karte oben, Plättchen darunter, Plan-Leiste unten.
+     Die Karte nimmt sich den Platz, der übrig bleibt. */
+  .prog-main, .tisch-malen .prog-main { flex-direction: column; gap: 2.4vmin; }
+  .prog-main > .board-box { position: relative; flex: 1 1 0; min-height: 0; width: 100%; }
+  .prog-main > .board-box .board-svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; }
+  .prog-bar { flex-wrap: wrap; row-gap: 2vmin; }
+  .plan-slots { flex-wrap: wrap; justify-content: center; max-width: 94vw; }
+  .plan-slots { --pt: 7.6vmin; }
+  .tisch-malen .plan-slots { max-width: 94vw; }
+  .tisch-malen .plan .ptile, .tisch-malen .pslot { width: 6.4vmin; height: 6.4vmin; }
+  .tisch-side { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+  .tisch-bauen .palette.tools { grid-template-columns: repeat(5, 10vmin); }
+  /* Ausguck: zwei Karten oben, eine darunter – so werden sie größer */
+  .mini-boards { flex-wrap: wrap; align-content: center; }
+  .board-box.mini .board-svg { max-width: 44vw; max-height: 44vmin; }
 }
 
 /* ---------- Entwickler-Galerie ---------- */

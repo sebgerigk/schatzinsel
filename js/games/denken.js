@@ -171,7 +171,7 @@ function mountWaage(root, t, api) {
 
   function render() {
     shelf.innerHTML = row.map((s, k) => `<div class="sack${weighed !== null && (k === weighed || k === weighed + 1) ? ' on-scale' : ''}" data-k="${k}">${sackSvg(s, size(s))}</div>`
-      + (k < n - 1 ? `<button class="gap${weighed === k ? ' swap' : ''}" data-k="${k}" aria-label="${weighed === k ? 'Tauschen' : 'Wiegen'}">${weighed === k ? swapIcon : scaleIcon}</button>` : '')).join('');
+      + (k < n - 1 ? `<button class="weigh-gap${weighed === k ? ' swap' : ''}" data-k="${k}" aria-label="${weighed === k ? 'Tauschen' : 'Wiegen'}">${weighed === k ? swapIcon : scaleIcon}</button>` : '')).join('');
   }
 
   function tilt(a, b) {
@@ -184,7 +184,7 @@ function mountWaage(root, t, api) {
   const sackInner = s => sackSvg(s, size(s)).replace('<svg class="sack-svg" viewBox="-40 -48 80 96"', '<svg width="80" height="96" viewBox="-40 -48 80 96"');
 
   shelf.addEventListener('click', async e => {
-    const gap = e.target.closest('.gap');
+    const gap = e.target.closest('.weigh-gap');
     if (!gap || locked) return;
     const k = Number(gap.dataset.k);
     if (weighed === k) {
