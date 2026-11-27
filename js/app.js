@@ -32,7 +32,7 @@ async function boot() {
 document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('touchmove', e => {
-  if (!e.target.closest('.gallery, .stations, .shop-items, .eltern-body, .tisch-list, textarea')) e.preventDefault();
+  if (!e.target.closest('.gallery, .shop-items, .eltern-body, .tisch-list, textarea')) e.preventDefault();
 }, { passive: false });
 
 // Offline-Betrieb (nur über https bzw. localhost möglich).
