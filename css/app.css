@@ -230,6 +230,13 @@ html.caps #app .screen-eltern, html.caps #app .screen-eltern button, html.caps #
 .switch small { display: block; font-weight: 400; font-size: 14px; color: #6b5a48; }
 .code { width: 100%; font: 13px ui-monospace, Menlo, monospace; padding: 10px; border: 2px solid var(--ink); border-radius: 12px; background: #fff; margin: 8px 0; -webkit-user-select: text; user-select: text; resize: none; word-break: break-all; }
 @media (max-width: 620px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+/* Einstellungen quer in zwei Spalten, damit jeder Schalter ohne Wischen erreichbar ist */
+.eltern-cols { display: grid; gap: 0 32px; align-items: start; }
+.eltern-cols h3:first-child { margin-top: 6px; }
+@media (orientation: landscape) {
+  .eltern-body:has(.eltern-cols) { max-width: 1040px; padding-bottom: 12px; }
+  .eltern-cols { grid-template-columns: 1fr 1fr; }
+}
 
 .gate { position: absolute; inset: 0; z-index: 80; display: grid; place-items: center; background: rgba(59, 42, 32, .55); font-family: system-ui, -apple-system, sans-serif; }
 .gate-card { position: relative; padding: 22px 26px 24px; text-align: center; width: min(88vw, 340px); }
@@ -254,19 +261,26 @@ html.caps #app .screen-eltern, html.caps #app .screen-eltern button, html.caps #
 
 /* ---------- Werft ---------- */
 .screen-werft { background: linear-gradient(#77d3f5, #dcf6fe 50%); }
-.werft-ship { position: absolute; left: 26%; top: calc(58% - 37vmin); width: 50vmin; translate: -50% 0; z-index: 3; animation: bob 4.2s ease-in-out infinite; transform-origin: 50% 90%; }
+.screen-werft { --shop-w: min(56vw, 80vmin); }
+.werft-ship { position: absolute; left: calc((100% - var(--shop-w) - 2vmin) / 2); top: calc(58% - 37vmin); width: min(50vmin, calc((100vw - var(--shop-w)) * .8)); translate: -50% 0; z-index: 3; animation: bob 4.2s ease-in-out infinite; transform-origin: 50% 90%; }
 .werft-ship .ship-svg { width: 100%; overflow: visible; }
-.shop { position: absolute; right: 2vmin; top: 12.5vmin; bottom: 2vmin; width: min(47vw, 66vmin); z-index: 6; display: flex; flex-direction: column; gap: 1.2vmin; padding: 1.4vmin; }
+.shop { position: absolute; right: 2vmin; top: 12.5vmin; bottom: 2vmin; width: var(--shop-w); z-index: 6; display: flex; flex-direction: column; gap: 1.2vmin; padding: 1.4vmin; }
 .shop-tabs { display: flex; gap: .8vmin; }
 .shop-tab { flex: 1; font-weight: 800; font-size: clamp(13px, 2.2vmin, 20px); padding: .5em .1em; border-radius: 1.5vmin; background: #f1dba4; border: 3px solid var(--ink); white-space: nowrap; }
 .shop-tab[aria-selected="true"] { background: var(--gold); box-shadow: 0 .5vmin 0 var(--ink); }
-.shop-items { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1vmin; align-content: start; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: .4vmin; }
-.item { position: relative; display: flex; flex-direction: column; align-items: center; gap: .3vmin; padding: .8vmin .6vmin 1vmin; background: #fff; border: 3px solid var(--ink); border-radius: 2vmin; transition: transform .08s; }
+/* Alle Teile einer Sorte auf einmal: werft.js wählt Spalten (--cols) und Kartenbreite (--tile) passend zur Fläche. */
+.shop-items {
+  --cw: min(var(--tile, 20vmin), 22vmin);
+  flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(var(--cols, 3), var(--cw)); grid-auto-rows: calc(var(--cw) / .82);
+  gap: 1.1vmin; justify-content: center; align-content: center; padding: .4vmin;
+}
+.item { position: relative; min-width: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: .3vmin; padding: .8vmin .6vmin 1vmin; background: #fff; border: 3px solid var(--ink); border-radius: 2vmin; transition: transform .08s; }
+.item > svg:first-child { flex: 1 1 0; min-height: 0; width: 100%; }
 .item:active { transform: scale(.96); }
 .item .ship-svg { width: 100%; pointer-events: none; }
 .item .ship-flag { animation: none; }
-.item-name { font-weight: 800; font-size: clamp(12px, 1.9vmin, 17px); line-height: 1.1; text-align: center; }
-.item-tag { display: inline-flex; align-items: center; gap: .25em; font-weight: 900; font-size: clamp(13px, 2.1vmin, 19px); color: #7a674c; }
+.item-name { font-weight: 800; font-size: clamp(11px, calc(var(--cw) * .1), 17px); line-height: 1.1; text-align: center; -webkit-hyphens: auto; hyphens: auto; max-width: 100%; }
+.item-tag { flex: none; display: inline-flex; align-items: center; gap: .25em; font-weight: 900; font-size: clamp(12px, calc(var(--cw) * .11), 19px); color: #7a674c; }
 .item-tag.price { color: var(--ink); }
 .item-tag svg { width: 1.25em; height: 1.25em; }
 .item-tag.on { color: var(--green2); }
@@ -276,7 +290,7 @@ html.caps #app .screen-eltern, html.caps #app .screen-eltern button, html.caps #
 .shop-buy .btn svg { width: 1.3em; }
 .btn.poor { background: #c9c2b4; color: #fff; }
 .screen-werft .koko { z-index: 5; }
-.screen-werft .bubble { max-width: min(34vw, 340px); }
+.screen-werft .bubble { max-width: min(34vw, 340px, calc(100vw - var(--shop-w) - 26vmin)); }
 .map-compass { position: absolute; right: 3vmin; bottom: 3vmin; width: 15vmin; z-index: 2; animation: compass 9s ease-in-out infinite; }
 .beam { opacity: .55; animation: beam 2.8s ease-in-out infinite alternate; }
 .twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 1.8s ease-in-out infinite; }
@@ -717,13 +731,18 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
 .build-bar .btn { font-size: clamp(26px, 5vmin, 44px); padding: .15em 1em; }
 .build-bar .btn .op-svg { width: 7vmin; height: 7vmin; }
 .build-bar .btn:disabled { opacity: .45; }
-.tisch-truhe { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; gap: 1vmin; }
+.tisch-truhe { position: absolute; inset: 1vmin 3vmin 2.4vmin; display: flex; flex-direction: column; align-items: center; gap: 1vmin; }
 .truhe-title svg { width: 9vmin; height: 9vmin; }
-.tisch-list { flex: 1; min-height: 0; width: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; display: flex; flex-wrap: wrap; align-content: flex-start; justify-content: center; gap: 2.4vmin; padding: 2.4vmin; }
-.werk { position: relative; width: 24vmin; padding: 1vmin; background: #fff; }
-.werk-open { display: block; width: 100%; }
-.werk-open svg { width: 100%; height: auto; max-height: 18vmin; }
-.werk-del { position: absolute; right: -2vmin; top: -2vmin; width: 6.4vmin; height: 6.4vmin; border-radius: 50%; display: grid; place-items: center; background: var(--cream); border: 3px solid var(--ink); }
+/* Die ganze Truhe auf einen Blick: kartentisch.js wählt Spalten (--cols) und Kartenbreite (--tile). */
+.tisch-list {
+  --cw: min(var(--tile, 24vmin), 26vmin);
+  flex: 1; min-height: 0; width: 100%; display: grid; grid-template-columns: repeat(var(--cols, 4), var(--cw)); grid-auto-rows: calc(var(--cw) / 1.3);
+  justify-content: center; align-content: center; gap: 3vmin; padding: 2.4vmin 3vmin;
+}
+.werk { position: relative; min-width: 0; min-height: 0; padding: 1vmin; background: #fff; }
+.werk-open { display: block; width: 100%; height: 100%; }
+.werk-open svg { width: 100%; height: 100%; }
+.werk-del { position: absolute; right: -2vmin; top: -2vmin; width: clamp(34px, calc(var(--cw) * .26), 6.4vmin); height: clamp(34px, calc(var(--cw) * .26), 6.4vmin); border-radius: 50%; display: grid; place-items: center; background: var(--cream); border: 3px solid var(--ink); }
 .werk-del .op-svg { width: 70%; height: 70%; }
 .werk-del.armed { background: var(--coral); animation: pulse 1s ease-in-out infinite; }
 .paint-thumb line { stroke-width: .3; stroke-linecap: round; }
@@ -853,6 +872,7 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
   .map-route { display: none; }
   .map-ship { left: auto; right: 3vmin; bottom: 21vmin; width: 22vmin; }
   .werft-ship { left: 50%; top: 13vmin; width: 44vmin; }
+  .screen-werft { --shop-w: 0px; }
   .shop { left: 2vmin; right: 2vmin; width: auto; top: 52vmin; bottom: 27vmin; }
   .screen-werft .wave { display: none; }
   .calc { flex-direction: column; gap: 3.4vmin; }

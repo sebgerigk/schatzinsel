@@ -6,7 +6,7 @@ import { register, go } from '../engine/router.js';
 import { getState, werkstatt, saveWerk, removeWerk } from '../engine/storage.js';
 import { P } from '../engine/content.js';
 import { sfx } from '../engine/audio.js';
-import { shake, wait, pick } from '../engine/util.js';
+import { shake, wait, pick, fitTiles } from '../engine/util.js';
 import { skySvg } from '../art/world.js';
 import { createKoko } from '../art/koko.js';
 import { ICON, coinSvg } from '../art/icons.js';
@@ -57,6 +57,7 @@ register('kartentisch', (el, { view = 'start' } = {}) => {
   let backTo = () => go('island', { island: 'programmieren' });
   back.addEventListener('click', () => { sfx('tap'); backTo(); });
 
+  let stopFit = () => {};
   const views = { start: showStart, malen: showMalen, bauen: showBauen, truhe: showTruhe };
   views[view]();
 
@@ -237,6 +238,7 @@ register('kartentisch', (el, { view = 'start' } = {}) => {
   /* ---------- Meine Truhe ---------- */
   function showTruhe() {
     backTo = () => showStart();
+    stopFit();
     const w = werkstatt();
     main.innerHTML = `<div class="tisch-truhe">
       <h2 class="truhe-title">${opIcon('chest')}</h2>
@@ -245,7 +247,11 @@ register('kartentisch', (el, { view = 'start' } = {}) => {
         ${w.bilder.map((b, i) => `<div class="werk panel"><button class="werk-open" data-k="bilder" data-i="${i}">${paintThumb(b)}</button><button class="werk-del" data-k="bilder" data-i="${i}" aria-label="Wegwerfen">${opIcon('trash')}</button></div>`).join('')}
       </div></div>`;
     koko.say(P(w.raetsel.length || w.bilder.length ? 'tisch_truhe' : 'tisch_truhe_leer'));
-    main.querySelector('.tisch-list').addEventListener('click', e => {
+    // Alles in der Truhe auf einen Blick, ohne Wischen
+    const list = main.querySelector('.tisch-list');
+    const fit = fitTiles(list, 1.3);
+    stopFit = fit.stop;
+    list.addEventListener('click', e => {
       const del = e.target.closest('.werk-del');
       if (del) {
         if (!del.classList.contains('armed')) { del.classList.add('armed'); sfx('tap'); return; }
@@ -279,7 +285,7 @@ register('kartentisch', (el, { view = 'start' } = {}) => {
     });
   }
 
-  return () => { alive = false; };
+  return () => { alive = false; stopFit(); };
 });
 
 /* ---------- kleine Vorschaubilder ---------- */

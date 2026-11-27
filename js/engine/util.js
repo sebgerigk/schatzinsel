@@ -75,3 +75,38 @@ export function confetti(n = 60) {
   setTimeout(() => layer.remove(), 4800);
   return layer;
 }
+
+/**
+ * Verteilt n gleich große Kacheln so auf eine Fläche w × h, dass alle ohne Wischen hineinpassen.
+ * aspect = Breite / Höhe einer Kachel. Liefert die Zahl der Spalten und die Kachelbreite (px).
+ */
+export function fitGrid(n, w, h, gap, aspect) {
+  let best = { cols: 1, size: 0 };
+  for (let cols = 1; cols <= Math.max(1, n); cols++) {
+    const rows = Math.ceil(n / cols);
+    const size = Math.min((w - gap * (cols - 1)) / cols, ((h - gap * (rows - 1)) / rows) * aspect);
+    if (size > best.size) best = { cols, size };
+  }
+  return best;
+}
+
+/**
+ * Hält die Kacheln in einem Raster-Kasten passend: setzt --cols und --tile (Kachelbreite in px)
+ * und rechnet neu, wenn sich die Größe ändert (iPad drehen) oder update() gerufen wird.
+ */
+export function fitTiles(box, aspect) {
+  const apply = () => {
+    const n = box.children.length;
+    const cs = getComputedStyle(box);
+    const w = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const h = box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    if (!n || w <= 0 || h <= 0) return;
+    const { cols, size } = fitGrid(n, w, h, parseFloat(cs.columnGap) || 0, aspect);
+    box.style.setProperty('--cols', cols);
+    box.style.setProperty('--tile', Math.floor(size) + 'px');
+  };
+  const ro = new ResizeObserver(apply);
+  ro.observe(box);
+  apply();
+  return { update: apply, stop: () => ro.disconnect() };
+}

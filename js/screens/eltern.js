@@ -75,24 +75,26 @@ function timeHtml() {
 function contentHtml() {
   const s = settings();
   const toggle = (key, label, on, note = '') => `<button class="switch ${on ? 'on' : ''}" data-toggle="${key}"><i></i><span>${label}${note ? `<small>${note}</small>` : ''}</span></button>`;
-  return `
+  return `<div class="eltern-cols"><section>
     <h3>Inseln</h3>
     ${ISLAND_ORDER.map(id => toggle('island:' + id, ISLANDS[id].name, s.islands[id])).join('')}
     <p class="msg" data-msg="islands"></p>
+    <p>Fahrtempo des Schiffs auf der Programmierinsel:</p>
+    <div class="choices-row">${[['normal', 'Normal'], ['langsam', 'Langsam']].map(([v, l]) => `<button class="opt ${s.progSpeed === v ? 'on' : ''}" data-speed="${v}">${l}</button>`).join('')}</div>
+    </section><section>
     <h3>Programmierinsel</h3>
     ${toggle('progPart2', 'Teil 2: Steuerrad', part2Visible(getState()), s.progPart2 === 'auto' || s.progPart2 === undefined
     ? 'Erscheint von selbst, sobald Teil 1 geschafft ist. Hier können Sie ihn vorher einschalten oder ganz ausblenden.'
     : 'Von Ihnen ' + (s.progPart2 ? 'eingeschaltet' : 'ausgeblendet') + '. Drehen links/rechts aus Sicht des Schiffs, Schleifen und Bedingungen – eher ab Ende der ersten Klasse.')}
-    <p>Fahrtempo des Schiffs:</p>
-    <div class="choices-row">${[['normal', 'Normal'], ['langsam', 'Langsam']].map(([v, l]) => `<button class="opt ${s.progSpeed === v ? 'on' : ''}" data-speed="${v}">${l}</button>`).join('')}</div>
     <h3>Schwierigkeit</h3>
     ${toggle('caps', 'Nur Großbuchstaben', s.caps, 'Alle Texte in Großbuchstaben; Aufgaben zur Groß- und Kleinschreibung entfallen.')}
-    ${toggle('unlockAll', 'Alle Stationen freischalten', s.unlockAll, 'Ihr Kind kann jede Station sofort wählen, ohne die davor zu schaffen.')}`;
+    ${toggle('unlockAll', 'Alle Stationen freischalten', s.unlockAll, 'Ihr Kind kann jede Station sofort wählen, ohne die davor zu schaffen.')}
+    </section></div>`;
 }
 
 function saveHtml() {
   const info = storageInfo();
-  return `
+  return `<div class="eltern-cols"><section>
     <p>${info.any ? 'Der Spielstand wird auf diesem Gerät gespeichert.' : '<b>Achtung: Auf diesem Gerät kann der Spielstand nicht gespeichert werden.</b>'}
       App-Starts: ${info.launches} · Speicher 1: ${info.local ? 'in Ordnung' : 'nicht verfügbar'} · Speicher 2: ${info.idb ? 'in Ordnung' : 'nicht verfügbar'}</p>
     <h3>Sicherung erstellen</h3>
@@ -103,13 +105,15 @@ function saveHtml() {
       <div class="choices-row"><button class="act" data-act="copy">Kopieren</button>${navigator.share ? '<button class="act" data-act="share">Teilen …</button>' : ''}</div>
       <p class="msg" data-msg="export"></p>
     </div>
+    </section><section>
     <h3>Sicherung laden</h3>
     <textarea class="code paste" rows="3" placeholder="Sicherung hier einfügen (beginnt mit SCHATZINSEL1:)"></textarea>
     <button class="act" data-act="import">Laden</button>
     <p class="msg" data-msg="import"></p>
     <h3>Neu anfangen</h3>
     <button class="act danger" data-act="reset">Fortschritt löschen</button>
-    <p class="msg" data-msg="reset"></p>`;
+    <p class="msg" data-msg="reset"></p>
+    </section></div>`;
 }
 
 const RENDER = { fortschritt: progressHtml, zeit: timeHtml, inhalte: contentHtml, stand: saveHtml };
