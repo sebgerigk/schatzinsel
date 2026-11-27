@@ -261,26 +261,20 @@ html.caps #app .screen-eltern, html.caps #app .screen-eltern button, html.caps #
 
 /* ---------- Werft ---------- */
 .screen-werft { background: linear-gradient(#77d3f5, #dcf6fe 50%); }
-.screen-werft { --shop-w: min(56vw, 80vmin); }
-.werft-ship { position: absolute; left: calc((100% - var(--shop-w) - 2vmin) / 2); top: calc(58% - 37vmin); width: min(50vmin, calc((100vw - var(--shop-w)) * .8)); translate: -50% 0; z-index: 3; animation: bob 4.2s ease-in-out infinite; transform-origin: 50% 90%; }
+.werft-ship { position: absolute; left: 26%; top: calc(58% - 37vmin); width: 50vmin; translate: -50% 0; z-index: 3; animation: bob 4.2s ease-in-out infinite; transform-origin: 50% 90%; }
 .werft-ship .ship-svg { width: 100%; overflow: visible; }
-.shop { position: absolute; right: 2vmin; top: 12.5vmin; bottom: 2vmin; width: var(--shop-w); z-index: 6; display: flex; flex-direction: column; gap: 1.2vmin; padding: 1.4vmin; }
+.shop { position: absolute; right: 2vmin; top: 12.5vmin; bottom: 2vmin; width: min(47vw, 66vmin); z-index: 6; display: flex; flex-direction: column; gap: 1.2vmin; padding: 1.4vmin; }
 .shop-tabs { display: flex; gap: .8vmin; }
 .shop-tab { flex: 1; font-weight: 800; font-size: clamp(13px, 2.2vmin, 20px); padding: .5em .1em; border-radius: 1.5vmin; background: #f1dba4; border: 3px solid var(--ink); white-space: nowrap; }
 .shop-tab[aria-selected="true"] { background: var(--gold); box-shadow: 0 .5vmin 0 var(--ink); }
-/* Alle Teile einer Sorte auf einmal: werft.js wählt Spalten (--cols) und Kartenbreite (--tile) passend zur Fläche. */
-.shop-items {
-  --cw: min(var(--tile, 20vmin), 22vmin);
-  flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(var(--cols, 3), var(--cw)); grid-auto-rows: calc(var(--cw) / .82);
-  gap: 1.1vmin; justify-content: center; align-content: center; padding: .4vmin;
-}
-.item { position: relative; min-width: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: .3vmin; padding: .8vmin .6vmin 1vmin; background: #fff; border: 3px solid var(--ink); border-radius: 2vmin; transition: transform .08s; }
-.item > svg:first-child { flex: 1 1 0; min-height: 0; width: 100%; }
+/* Der Laden ist ein eigener Bereich, der in sich scrollt – der Bildschirm selbst bleibt stehen. */
+.shop-items { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1vmin; align-content: start; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; padding: .4vmin; }
+.item { position: relative; display: flex; flex-direction: column; align-items: center; gap: .3vmin; padding: .8vmin .6vmin 1vmin; background: #fff; border: 3px solid var(--ink); border-radius: 2vmin; transition: transform .08s; }
 .item:active { transform: scale(.96); }
 .item .ship-svg { width: 100%; pointer-events: none; }
 .item .ship-flag { animation: none; }
-.item-name { font-weight: 800; font-size: clamp(11px, calc(var(--cw) * .1), 17px); line-height: 1.1; text-align: center; -webkit-hyphens: auto; hyphens: auto; max-width: 100%; }
-.item-tag { flex: none; display: inline-flex; align-items: center; gap: .25em; font-weight: 900; font-size: clamp(12px, calc(var(--cw) * .11), 19px); color: #7a674c; }
+.item-name { font-weight: 800; font-size: clamp(12px, 1.9vmin, 17px); line-height: 1.1; text-align: center; }
+.item-tag { display: inline-flex; align-items: center; gap: .25em; font-weight: 900; font-size: clamp(13px, 2.1vmin, 19px); color: #7a674c; }
 .item-tag.price { color: var(--ink); }
 .item-tag svg { width: 1.25em; height: 1.25em; }
 .item-tag.on { color: var(--green2); }
@@ -290,7 +284,7 @@ html.caps #app .screen-eltern, html.caps #app .screen-eltern button, html.caps #
 .shop-buy .btn svg { width: 1.3em; }
 .btn.poor { background: #c9c2b4; color: #fff; }
 .screen-werft .koko { z-index: 5; }
-.screen-werft .bubble { max-width: min(34vw, 340px, calc(100vw - var(--shop-w) - 26vmin)); }
+.screen-werft .bubble { max-width: min(34vw, 340px); }
 .map-compass { position: absolute; right: 3vmin; bottom: 3vmin; width: 15vmin; z-index: 2; animation: compass 9s ease-in-out infinite; }
 .beam { opacity: .55; animation: beam 2.8s ease-in-out infinite alternate; }
 .twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 1.8s ease-in-out infinite; }
@@ -872,7 +866,6 @@ button.pic-word { font-family: var(--read); font-weight: 700; }
   .map-route { display: none; }
   .map-ship { left: auto; right: 3vmin; bottom: 21vmin; width: 22vmin; }
   .werft-ship { left: 50%; top: 13vmin; width: 44vmin; }
-  .screen-werft { --shop-w: 0px; }
   .shop { left: 2vmin; right: 2vmin; width: auto; top: 52vmin; bottom: 27vmin; }
   .screen-werft .wave { display: none; }
   .calc { flex-direction: column; gap: 3.4vmin; }

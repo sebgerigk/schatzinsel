@@ -5,7 +5,7 @@ import { register, go } from '../engine/router.js';
 import { getState, isOwned, buyPart, equipPart, hasFlag, setFlag } from '../engine/storage.js';
 import { P } from '../engine/content.js';
 import { sfx } from '../engine/audio.js';
-import { pick, burst, shake, fitTiles } from '../engine/util.js';
+import { pick, burst, shake } from '../engine/util.js';
 import { SHIPYARD } from '../content/shipyard.js';
 import { shipSvg, skySvg } from '../art/world.js';
 import { createKoko } from '../art/koko.js';
@@ -21,8 +21,6 @@ export const shipSound = extras => {
   const id = ['shanty', 'nebelhorn', 'glocke', 'katze', 'aeffchen'].find(x => (extras || []).includes(x));
   return id ? SHIP_SOUND[id] : null;
 };
-
-const ITEM_ASPECT = .82;   // Breite / Höhe einer Karte im Laden
 
 register('werft', el => {
   const state = getState();
@@ -52,7 +50,6 @@ register('werft', el => {
   const itemsBox = el.querySelector('.shop-items');
   const buyBox = el.querySelector('.shop-buy');
   const coinsEl = el.querySelector('.coins b');
-  const fit = fitTiles(itemsBox, ITEM_ASPECT);   // alle Teile einer Sorte ohne Wischen sichtbar
   const koko = createKoko();
   el.appendChild(koko.el);
   if (!visited) { visited = true; koko.say(P('werft_intro')); } else koko.show(P('werft_again'));
@@ -89,7 +86,6 @@ register('werft', el => {
       const fresh = n && n.done && !owned && !hasFlag('schatzGesehen', item.id);
       return `<button class="${cls}" data-i="${i}">${picture(c, item)}<span class="item-name">${item.name}</span>${tag}${fresh ? '<span class="item-new">Neu!</span>' : ''}</button>`;
     }).join('');
-    fit.update();
     if (c.special) c.items.forEach(item => { if (item.needs && need(item).done) setFlag('schatzGesehen', item.id); });
     if (trying) {
       const enough = state.coins >= trying.item.price;
@@ -165,5 +161,4 @@ register('werft', el => {
 
   el.querySelector('.back').addEventListener('click', () => { sfx('tap'); go('map'); });
   render();
-  return () => fit.stop();
 });
